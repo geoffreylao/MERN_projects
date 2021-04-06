@@ -33,7 +33,7 @@ exports.create = (req, res) => {
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
   const title = req.query.title;
-  var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
+  var condition = title ? { 'players.code': { $regex: new RegExp(title), $options: "i" } } : {};
 
   Tutorial.find(condition)
     .then(data => {
