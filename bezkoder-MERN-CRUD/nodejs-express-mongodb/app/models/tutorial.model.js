@@ -12,4 +12,4 @@ module.exports = mongoose => {
   );
 
   return Tutorial;
-}
+};
