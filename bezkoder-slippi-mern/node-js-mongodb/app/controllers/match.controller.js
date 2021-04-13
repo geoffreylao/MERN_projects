@@ -24,5 +24,19 @@ exports.findAll = (req, res) => {
 };
 
 exports.findAllComplete = (req, res) => {
+  const code = req.query.code;
+  var condition = code ? { 'players.code': { $regex: new RegExp(code), $options: "i" } } : {};
 
+  Match.find({condition, 'metadata.game_complete' : true})
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving matches."
+      });
+    });
+
+    //http://localhost:8080/api/matches?code=CAVE#773/complete syntax
 }
