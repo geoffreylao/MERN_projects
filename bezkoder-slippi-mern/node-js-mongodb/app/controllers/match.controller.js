@@ -1,8 +1,22 @@
 const db = require("../models");
 const Match = db.matches;
 
+  // File storage location and naming
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, DIR);
+  },
+  filename: (req, file, cb) => {
+      const fileName = file.originalname;
+      cb(null,fileName)
+  }
+});
+
 // Create and Save new matches
 exports.create = (req, res) => {
+
+
+
 
 };
 
