@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AddMatch from "./components/add-match.component";
-import MatchesList from "./components/tutorials-list.component";
+import MatchesList from "./components/matches-list.component";
 
 class App extends Component {
   render() {

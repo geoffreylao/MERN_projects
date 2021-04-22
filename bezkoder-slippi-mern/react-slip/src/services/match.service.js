@@ -14,4 +14,4 @@ class MatchDataService{
   }
 }
 
-export default new TutorialDataService();
+export default new MatchDataService();

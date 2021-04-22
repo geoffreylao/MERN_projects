@@ -16,14 +16,14 @@ const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
 const DIR = path.resolve(__dirname, '../public/');
 
-
-// File storage location and naming
-
-
 // Variables for parse_folder function
 var obj_arr = [];
 var failed_inserts = [];
 var count = 0;
+
+function splitFilename(str){
+  return str.split('/')[2];
+}
 
 function parse_slp(filename, arr){
   try {
@@ -309,8 +309,8 @@ function parse_slp(filename, arr){
   
     arr.push(myobj);
   } catch (error) {
-    console.log("Error parsing: " + filename);
-    failed_inserts.push(filename);
+    console.log("Error parsing: " + splitFilename(filename));
+    failed_inserts.push(splitFilename(filename));
   }
 }
 
@@ -334,7 +334,7 @@ function parse_folder(folder, res){
 
   if (obj_arr.length === 0) {
     console.log("Nothing to insert!")
-    res.json({failed: myfailed, failed_arr: myfailed_arr})
+    res.json({failed_arr: myfailed_arr})
 
     failed_inserts = [];
   }else{
@@ -353,7 +353,7 @@ function parse_folder(folder, res){
         failed_inserts = [];
         count = 0;
 
-        resp.send({ inserted: myinsert, failed: myfailed_arr.length , failed_arr: myfailed_arr });
+        resp.send({ inserted: myinsert, failed_arr: myfailed_arr });
       }); // dbo.collection
     }); // MongoClient.connect
   } // else
@@ -370,6 +370,7 @@ const slippiFilter = function(req, file, cb) {
 
 // Create and Save new matches
 exports.create = (req, res) => {
+  // File storage location and naming
   var R_DIR = DIR + "/" + uuidv4();
   fs.mkdir(R_DIR, function(err){});
 
@@ -392,7 +393,6 @@ exports.create = (req, res) => {
     //To parse PUBLIC folder and empty it
     parse_folder(R_DIR, res); 
     rimraf.sync(R_DIR);
-
   });
 
   
