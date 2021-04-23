@@ -400,8 +400,11 @@ exports.create = (req, res) => {
 
 // Retrieve all matches from the database 
 exports.findAll = (req, res) => {
-  const code = req.query.code;
-  var condition = code ? { 'players.code': { $regex: new RegExp(code), $options: "i" } } : {};
+  let code = "";
+  code = req.query.code;
+  let mycode = code.replace("-", "#");
+
+  var condition = { 'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )}};
 
   Match.find(condition)
     .then(data => {
