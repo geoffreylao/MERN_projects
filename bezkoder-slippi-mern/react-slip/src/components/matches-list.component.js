@@ -139,7 +139,6 @@ export default class MatchesList extends Component {
                 </label>{" "}
                 {currentMatch.metadata.winner}
               </div>
-
             </div>
           ) : (
             <div>
