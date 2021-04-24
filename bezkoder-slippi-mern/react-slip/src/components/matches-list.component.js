@@ -1,11 +1,6 @@
-import React, { Component, Spinner} from "react";
+import React, { Component } from "react";
 import MatchDataService from "../services/match.service";
-
-
-
-
-
-
+import ReactSpinner from 'react-bootstrap-spinner'
 
 export default class MatchesList extends Component {
   constructor(props) {
@@ -115,7 +110,7 @@ export default class MatchesList extends Component {
       {
         return(
           <div>
-            <div>Loading</div>
+            <div><ReactSpinner type="border" color="primary" size="5" /></div>
           </div>
         )
       }
