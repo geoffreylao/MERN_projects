@@ -1,5 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, Spinner} from "react";
 import MatchDataService from "../services/match.service";
+
+
+
+
+
+
 
 export default class MatchesList extends Component {
   constructor(props) {
@@ -12,6 +18,7 @@ export default class MatchesList extends Component {
 
     this.state = {
       matches: [],
+      matchesLoading: "",
       currentMatch: null,
       currentIndex: -1,
       searchCode: ""
@@ -59,23 +66,62 @@ export default class MatchesList extends Component {
   }
 
   searchCode() {
+    
+    if (this.state.searchCode === "") return;
+    
     let mycode = this.state.searchCode.replace("#", "-");
-
+    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex } = this.state;
+    this.setState({
+      matchesLoaded: "loading"
+    });
     MatchDataService.findByCode(mycode)
       .then(response => {
         this.setState({
-          matches: response.data
+          matches: response.data,
+          matchesLoaded: "loaded"
         });
         console.log(response.data);
       })
       .catch(e => {
-        console.log(e);
-      });
+        this.setState({
+          matchesLoaded: "error"
+        });
+      }); 
   }
 
   render() {
-    const { searchCode, matches, currentMatch, currentIndex } = this.state;
-
+    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex } = this.state;
+    
+    const renderMatchList = () => {
+      if (matchesLoaded === "loaded") {
+        return(
+          <ul className="list-group">
+            {matches &&
+              matches.map((match, index) => (
+                <li
+                  className={
+                    "list-group-item " +
+                    (index === currentIndex ? "active" : "")
+                  }
+                  onClick={() => this.setActiveMatch(match, index)}
+                  key={index}
+                >
+                  {match.metadata.winner}
+                </li>
+              ))}
+          </ul>
+        )
+      }
+      else if (matchesLoaded === "loading")
+      {
+        return(
+          <div>
+            <div>Loading</div>
+          </div>
+        )
+      }
+    };
+    
     return (
       <div className="list row">
         <div className="col-md-8">
@@ -100,22 +146,7 @@ export default class MatchesList extends Component {
         </div>
         <div className="col-md-6">
           <h4>Matches List</h4>
-
-          <ul className="list-group">
-            {matches &&
-              matches.map((match, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === currentIndex ? "active" : "")
-                  }
-                  onClick={() => this.setActiveMatch(match, index)}
-                  key={index}
-                >
-                  {match.metadata.winner}
-                </li>
-              ))}
-          </ul>
+          {renderMatchList()}
         </div>
         <div className="col-md-6">
           {currentMatch ? (
