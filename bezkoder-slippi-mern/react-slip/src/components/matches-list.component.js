@@ -70,7 +70,6 @@ export default class MatchesList extends Component {
     if (this.state.searchCode === "") return;
     
     let mycode = this.state.searchCode.replace("#", "-");
-    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex } = this.state;
     this.setState({
       matchesLoaded: "loading"
     });
