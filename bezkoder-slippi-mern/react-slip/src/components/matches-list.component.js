@@ -6,8 +6,6 @@ export default class MatchesList extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchCode = this.onChangeSearchCode.bind(this);
-    //this.retrieveMatches = this.retrieveMatches.bind(this);
-    //this.refreshList = this.refreshList.bind(this);
     this.setActiveMatch = this.setActiveMatch.bind(this);
     this.searchCode = this.searchCode.bind(this);
 
@@ -32,27 +30,6 @@ export default class MatchesList extends Component {
     });
   }
 
-  // retrieveMatches(){
-  //   MatchDataService.getAll()
-  //     .then(response => {
-  //       this.setState({
-  //         matches: response.data
-  //       });
-  //       console.log(response.data)
-  //     })
-  //     .catch(e => {
-  //       console.log(e);
-  //     });
-  // }
-
-  // refreshList() {
-  //   this.retrieveMatches();
-  //   this.setState({
-  //     currentMatch: null,
-  //     currentIndex: -1
-  //   });
-  // }
-
   setActiveMatch(match, index) {
     this.setState({
       currentMatch: match,
@@ -65,9 +42,11 @@ export default class MatchesList extends Component {
     if (this.state.searchCode === "") return;
     
     let mycode = this.state.searchCode.replace("#", "-");
+    
     this.setState({
       matchesLoaded: "loading"
     });
+
     MatchDataService.findByCode(mycode)
       .then(response => {
         this.setState({

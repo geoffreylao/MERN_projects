@@ -10,7 +10,6 @@ var MongoClient = require('mongodb').MongoClient;
 
 // POST upload function imports
 const multer = require('multer');
-const fsExtra = require('fs-extra');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
@@ -404,9 +403,17 @@ exports.findAll = (req, res) => {
   code = req.query.code;
   let mycode = code.replace("-", "#");
 
-  var condition = { 'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )}};
+  let oppcode = "test";
+  oppcode = req.query.oppcode;
+  let myoppcode = oppcode.replace("-", "#");
 
-  Match.find(condition)
+  //var condition = { 'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )}};
+
+  Match.find({
+    'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )},
+    'players.code': { $regex: new RegExp(myoppcode, "i" )},
+    "players": { $elemMatch : {code: "GEFF#353", characterString: {$in : ["PEACH", "MARTH"]} }}
+  })
     .then(data => {
       res.send(data);
     })

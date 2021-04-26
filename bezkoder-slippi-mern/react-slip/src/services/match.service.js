@@ -9,8 +9,8 @@ class MatchDataService{
     return http.post("/matches", data);
   }
 
-  findByCode(code){
-    return http.get(`/matches?code=${code}`);
+  findByCode(code, oppcode){
+    return http.get(`/matches?code=${code}&oppcode=${oppcode}`);
   }
 }
 
