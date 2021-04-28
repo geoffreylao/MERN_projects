@@ -15,6 +15,8 @@ const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
 const DIR = path.resolve(__dirname, '../public/');
 
+
+
 // Variables for parse_folder function
 var obj_arr = [];
 var failed_inserts = [];
@@ -226,7 +228,7 @@ function parse_slp(filename, arr){
         stageString: stage_dict[settings.stageId],
       },
       metadata: {
-        startAt: metadata.startAt,
+        startAt: new Date(metadata.startAt),
         lastFrame: metadata.lastFrame,
         minutes: stats.overall[0].inputsPerMinute.total,
         game_complete: check_complete(stats),
@@ -399,23 +401,56 @@ exports.create = (req, res) => {
 
 // Retrieve all matches from the database 
 exports.findAll = (req, res) => {
-  let code = "";
   code = req.query.code;
-  let mycode = code.replace("-", "#");
+  let mycode = code ? code.replace("-", "#") : "";
 
-  let oppcode = "test";
   oppcode = req.query.oppcode;
-  let myoppcode = oppcode.replace("-", "#");
+  let myoppcode = oppcode ? oppcode.replace("-", "#") : "" ;
 
-  //var condition = { 'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )}};
+  let chararr = [
+    "CAPTAIN_FALCON","DONKEY_KONG","FOX" ,"GAME_AND_WATCH","KIRBY",
+    "BOWSER","LINK","LUIGI","MARIO","MARTH","MEWTWO","NESS","PEACH",
+    "PIKACHU","ICE_CLIMBERS","JIGGLYPUFF","SAMUS","YOSHI","ZELDA",
+    "SHEIK","FALCO","YOUNG_LINK","DR_MARIO","ROY","PICHU","GANONDORF"
+  ]
+
+  let stagearr = [
+    "FOUNTAIN_OF_DREAMS","POKEMON_STADIUM","YOSHIS_STORY","DREAMLAND",
+    "BATTLEFIELD","FINAL_DESTINATION"
+  ]
+
+  let completearr = [true,false];
+
+  let characters = "";
+  characters = req.query.character !== undefined ? req.query.character : chararr;
+
+  let oppcharacters = "";
+  oppcharacters = req.query.oppcharacter !== undefined ? req.query.oppcharacter : chararr;
+
+  let stages = "";
+  stages = req.query.stage !== undefined ? req.query.stage : stagearr;
+
+  let complete = req.query.complete
+  complete = req.query.complete !== undefined ? req.query.complete : completearr;
+
+  let startdate = req.query.start ? req.query.start : "2001";
+
+  let enddate = req.query.end ? new Date(req.query.end): new Date();
 
   Match.find({
     'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )},
     'players.code': { $regex: new RegExp(myoppcode, "i" )},
-    "players": { $elemMatch : {code: "GEFF#353", characterString: {$in : ["PEACH", "MARTH"]} }}
+    "players": { $elemMatch : {code: mycode, characterString: {$in : characters} }},
+    "players": { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }},
+    'settings.stageString' : {$in: stages},
+    'metadata.game_complete': {$in: complete},
+    'metadata.startAt' : {
+      $gte: startdate,
+      $lte: enddate
+    }
   })
     .then(data => {
-      res.send(data);
+      res.send(enddate);
     })
     .catch(err => {
       res.status(500).send({
