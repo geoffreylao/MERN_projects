@@ -401,11 +401,15 @@ exports.create = (req, res) => {
 
 // Retrieve all matches from the database 
 exports.findAll = (req, res) => {
+  let playerArr = [];
+
   code = req.query.code;
   let mycode = code ? code.replace("-", "#") : "";
+  mycode ? playerArr.push(mycode) : {} ;
 
   oppcode = req.query.oppcode;
   let myoppcode = oppcode ? oppcode.replace("-", "#") : "" ;
+  myoppcode ? playerArr.push(myoppcode) : {} ;
 
   let chararr = [
     "CAPTAIN_FALCON","DONKEY_KONG","FOX" ,"GAME_AND_WATCH","KIRBY",
@@ -438,8 +442,7 @@ exports.findAll = (req, res) => {
   let enddate = req.query.end ? new Date(req.query.end): new Date();
 
   Match.find({
-    'players.code': { $regex: new RegExp("^" + mycode + "$", "i" )},
-    'players.code': { $regex: new RegExp(myoppcode, "i" )},
+    'players.code':{ $all: playerArr },
     "players": { $elemMatch : {code: mycode, characterString: {$in : characters} }},
     "players": { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }},
     'settings.stageString' : {$in: stages},
@@ -450,7 +453,7 @@ exports.findAll = (req, res) => {
     }
   })
     .then(data => {
-      res.send(enddate);
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({

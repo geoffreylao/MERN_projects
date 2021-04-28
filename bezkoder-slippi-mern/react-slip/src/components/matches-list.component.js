@@ -8,18 +8,19 @@ export default class MatchesList extends Component {
     this.onChangeSearchCode = this.onChangeSearchCode.bind(this);
     this.setActiveMatch = this.setActiveMatch.bind(this);
     this.searchCode = this.searchCode.bind(this);
+    this.onChangeOppCode = this.onChangeOppCode.bind(this);
 
     this.state = {
       matches: [],
       matchesLoading: "",
       currentMatch: null,
       currentIndex: -1,
-      searchCode: ""
+      searchCode: "",
+      oppCode: ""
     };
   }
 
   componentDidMount() {
-    this.searchCode();
   }
 
   onChangeSearchCode(e) {
@@ -27,6 +28,14 @@ export default class MatchesList extends Component {
 
     this.setState({
       searchCode: searchCode
+    });
+  }
+
+  onChangeOppCode(e) {
+    const oppCode = e.target.value;
+
+    this.setState({
+      oppCode: oppCode
     });
   }
 
@@ -39,15 +48,15 @@ export default class MatchesList extends Component {
 
   searchCode() {
     
-    if (this.state.searchCode === "") return;
-    
     let mycode = this.state.searchCode.replace("#", "-");
     
     this.setState({
       matchesLoaded: "loading"
     });
 
-    MatchDataService.findByCode(mycode)
+    let params = new URLSearchParams(`code=${mycode}`)
+
+    MatchDataService.findByCode(params.toString())
       .then(response => {
         this.setState({
           matches: response.data,
@@ -63,7 +72,7 @@ export default class MatchesList extends Component {
   }
 
   render() {
-    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex } = this.state;
+    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex, oppCode } = this.state;
     
     const renderMatchList = () => {
       if (matchesLoaded === "loaded") {
@@ -105,6 +114,13 @@ export default class MatchesList extends Component {
               placeholder="Your Connect Code"
               value={searchCode}
               onChange={this.onChangeSearchCode}
+            />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Your Opponents Code"
+              value={oppCode}
+              onChange={this.onChangeOppCode}
             />
             <div className="input-group-append">
               <button
