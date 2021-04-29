@@ -49,12 +49,17 @@ export default class MatchesList extends Component {
   searchCode() {
     
     let mycode = this.state.searchCode.replace("#", "-");
-    
+    let myoppcode = this.state.oppCode.replace("#", "-");
+
     this.setState({
       matchesLoaded: "loading"
     });
 
     let params = new URLSearchParams(`code=${mycode}`)
+    
+    if(myoppcode){
+      params.append('oppcode', myoppcode);
+    }
 
     MatchDataService.findByCode(params.toString())
       .then(response => {
@@ -143,23 +148,46 @@ export default class MatchesList extends Component {
               <h4>match</h4>
               <div>
                 <label>
-                  <strong>startAt:</strong>
+                  <strong>players.code 1:</strong>
                 </label>{" "}
-                {currentMatch.metadata.startAt}
+                {currentMatch.players[0].code}
               </div>
               <div>
                 <label>
-                  <strong>game_complete:</strong>
+                  <strong>players.code 2:</strong>
                 </label>{" "}
-                {currentMatch.metadata.game_complete}
+                {currentMatch.players[1].code}
               </div>
               <div>
                 <label>
-                  <strong>winner:</strong>
+                  <strong>players.chracterString 1:</strong>
                 </label>{" "}
-                {currentMatch.metadata.winner}
+                {currentMatch.players[0].characterString}
               </div>
-
+              <div>
+                <label>
+                  <strong>players.chracterString 2:</strong>
+                </label>{" "}
+                {currentMatch.players[1].characterString}
+              </div>
+              <div>
+                <label>
+                  <strong>settings.stageString:</strong>
+                </label>{" "}
+                {currentMatch.settings.stageString}
+              </div>
+              <div>
+                <label>
+                  <strong>metadata.game_complete:</strong>
+                </label>{" "}
+                {currentMatch.metadata.game_complete.toString()}
+              </div>
+              <div>
+                <label>
+                  <strong>metadata.startAt:</strong>
+                </label>{" "}
+                {currentMatch.metadata.startAt.toString()}
+              </div>
             </div>
           ) : (
             <div>
