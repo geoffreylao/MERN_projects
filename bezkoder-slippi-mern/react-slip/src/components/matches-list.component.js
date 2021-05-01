@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import MatchDataService from "../services/match.service";
 import ReactSpinner from 'react-bootstrap-spinner'
+import Select from 'react-select'
 
 export default class MatchesList extends Component {
   constructor(props) {
@@ -16,11 +17,74 @@ export default class MatchesList extends Component {
       currentMatch: null,
       currentIndex: -1,
       searchCode: "",
-      oppCode: ""
+      oppCode: "",
+      selectCharacters: [],
+      myCharValue: [],
+      oppCharValue: [],
+      selectStages: [],
+      stageValue: []
     };
   }
 
+  async getCharacters(){
+    let chararr = [
+      "BOWSER","CAPTAIN_FALCON","DONKEY_KONG","DR_MARIO",
+      "FALCO","FOX","GAME_AND_WATCH","GANONDORF","ICE_CLIMBERS",
+      "JIGGLYPUFF","KIRBY","LINK","LUIGI","MARIO","MARTH","MEWTWO",
+      "NESS","PEACH","PICHU","PIKACHU","ROY","SAMUS","SHEIK","YOSHI",
+      "YOUNG_LINK","ZELDA"
+    ]
+
+    let charpng = [
+      "Bowser.png","Captain Falcon.png","Donkey Kong.png","Dr. Mario.png",
+      "Falco.png","Fox.png","Game & Watch.png","Ganondorf.png","Ice Climbers.png",
+      "Jigglypuff.png","Kirby.png","Link.png","Luigi.png","Mario.png","Marth.png","Mewtwo.png",
+      "Ness.png","Peach.png","Pichu.png","Pikachu.png","Roy.png","Samus.png","Sheik.png","Yoshi.png",
+      "Young Link.png","Zelda.png"
+    ]
+    
+    const characters = chararr.map((x,i) => ({
+      "value": x,
+      "label": <div><img src={`stock_icons/${charpng[i]}`} height="30px" width="30px" alt=""/> {charpng[i].split('.').slice(0, -1).join('.')}</div>
+    }))
+
+    this.setState({selectCharacters: characters})
+  }
+
+  async getStages(){
+    let stagearr = [
+      "FOUNTAIN_OF_DREAMS","POKEMON_STADIUM","YOSHIS_STORY","DREAMLAND",
+      "BATTLEFIELD","FINAL_DESTINATION"
+    ]
+
+    let stagepng = [
+      "Fountain of Dreams.png","Pokemon Stadium.png","Yoshis Story.png","Dreamland.png",
+      "Battlefield.png","Final Destination.png"
+    ]
+
+    const stages = stagearr.map((x,i) => ({
+      "value": x,
+      "label": <div><img src={`stage_icons/${stagepng[i]}`} height="30px" width="30px" alt=""/> {stagepng[i].split('.').slice(0, -1).join('.')}</div>
+    }))
+
+    this.setState({selectStages: stages})
+  }
+
+  myCharChange(e){
+    this.setState({myCharValue: e})
+  }
+
+  myOppChange(e){
+    this.setState({oppCharValue: e})
+  }
+
+  stageChange(e){
+    this.setState({stageValue: e})
+  }
+   
   componentDidMount() {
+    this.getCharacters();
+    this.getStages();
   }
 
   onChangeSearchCode(e) {
@@ -59,6 +123,18 @@ export default class MatchesList extends Component {
     
     if(myoppcode){
       params.append('oppcode', myoppcode);
+    }
+
+    for (let i = 0; i < this.state.myCharValue.length; i++) {
+      params.append('character', this.state.myCharValue[i].value);
+    }
+
+    for (let i = 0; i < this.state.oppCharValue.length; i++) {
+      params.append('oppcharacter', this.state.oppCharValue[i].value);
+    }
+
+    for (let i = 0; i < this.state.stageValue.length; i++) {
+      params.append('stage', this.state.stageValue[i].value);
     }
 
     MatchDataService.findByCode(params.toString())
@@ -108,11 +184,12 @@ export default class MatchesList extends Component {
         )
       }
     };
-    
+
+    //console.log(this.state.myCharValue);
+    console.log(this.state.oppCharValue);
     return (
       <div className="list row">
         <div className="col-md-8">
-          <div className="input-group mb-3">
             <input
               type="text"
               className="form-control"
@@ -127,6 +204,33 @@ export default class MatchesList extends Component {
               value={oppCode}
               onChange={this.onChangeOppCode}
             />
+            <div>
+              <Select 
+                menuPortalTarget={document.body} 
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
+                options={this.state.selectCharacters} 
+                onChange={this.myCharChange.bind(this)} 
+                isMulti 
+              />
+            </div>
+            <div>
+              <Select 
+                menuPortalTarget={document.body} 
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
+                options={this.state.selectCharacters} 
+                onChange={this.myOppChange.bind(this)} 
+                isMulti 
+              />
+            </div>
+            <div>
+              <Select 
+                menuPortalTarget={document.body} 
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
+                options={this.state.selectStages} 
+                onChange={this.stageChange.bind(this)} 
+                isMulti 
+              />
+            </div>
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
@@ -136,7 +240,6 @@ export default class MatchesList extends Component {
                 Search
               </button>
             </div>
-          </div>
         </div>
         <div className="col-md-6">
           <h4>Matches List</h4>

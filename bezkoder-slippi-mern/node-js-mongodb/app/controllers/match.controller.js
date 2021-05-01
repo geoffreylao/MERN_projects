@@ -425,11 +425,17 @@ exports.findAll = (req, res) => {
 
   let completearr = [true,false];
 
-  let characters = "";
+  let characters = [];
   characters = req.query.character !== undefined ? req.query.character : chararr;
+  if(!Array.isArray(characters)){
+    characters = [characters];
+  }
 
-  let oppcharacters = "";
+  let oppcharacters = [];
   oppcharacters = req.query.oppcharacter !== undefined ? req.query.oppcharacter : chararr;
+  if(!Array.isArray(oppcharacters)){
+    oppcharacters = [oppcharacters];
+  }
 
   let stages = "";
   stages = req.query.stage !== undefined ? req.query.stage : stagearr;
@@ -443,8 +449,8 @@ exports.findAll = (req, res) => {
 
   Match.find({
     'players.code':{ $all: playerArr },
-    "players": { $elemMatch : {code: mycode, characterString: {$in : characters} }},
-    "players": { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }},
+    'players' : {$all: [{ $elemMatch : {code: mycode, characterString: {$in : characters} }},
+      { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }}]},
     'settings.stageString' : {$in: stages},
     'metadata.game_complete': {$in: complete},
     'metadata.startAt' : {
