@@ -3,6 +3,10 @@ import MatchDataService from "../services/match.service";
 import ReactSpinner from 'react-bootstrap-spinner'
 import Select from 'react-select'
 
+import 'react-dates/initialize';
+import { DateRangePicker } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+
 export default class MatchesList extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +28,9 @@ export default class MatchesList extends Component {
       oppCharValue: [],
       selectStages: [],
       stageValue: [],
-      isOnlyComplete: false 
+      isOnlyComplete: false,
+      startDate: null,
+      endDate: null
     };
   }
 
@@ -151,6 +157,14 @@ export default class MatchesList extends Component {
       params.append('complete', true)
     }
 
+    if(this.state.startDate){
+      params.append('start', (this.state.startDate._d).toISOString())
+    }
+
+    if(this.state.endDate){
+      params.append('end', (this.state.endDate._d).toISOString())
+    }
+
     MatchDataService.findByCode(params.toString())
       .then(response => {
         this.setState({
@@ -199,8 +213,6 @@ export default class MatchesList extends Component {
       }
     };
 
-    //console.log(this.state.myCharValue);
-    console.log(this.state.isOnlyComplete);
     return (
       <div className="list row">
         <div className="col-md-8">
@@ -254,6 +266,18 @@ export default class MatchesList extends Component {
               />
                 Exclude games ending in LRA Start
             </label>
+            <div>
+            <DateRangePicker
+              startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+              startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+              endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+              endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+              onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+              focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+              onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+              isOutsideRange={() => false}
+            />
+            </div>
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
