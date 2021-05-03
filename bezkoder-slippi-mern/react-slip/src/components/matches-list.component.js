@@ -10,6 +10,7 @@ export default class MatchesList extends Component {
     this.setActiveMatch = this.setActiveMatch.bind(this);
     this.searchCode = this.searchCode.bind(this);
     this.onChangeOppCode = this.onChangeOppCode.bind(this);
+    this.onChangeOnlyComplete = this.onChangeOnlyComplete.bind(this);
 
     this.state = {
       matches: [],
@@ -22,7 +23,8 @@ export default class MatchesList extends Component {
       myCharValue: [],
       oppCharValue: [],
       selectStages: [],
-      stageValue: []
+      stageValue: [],
+      isOnlyComplete: false 
     };
   }
 
@@ -103,6 +105,14 @@ export default class MatchesList extends Component {
     });
   }
 
+  onChangeOnlyComplete(e) {
+    const isOnlyComplete = e.target.checked;
+
+    this.setState({
+      isOnlyComplete: isOnlyComplete
+    })
+  }
+
   setActiveMatch(match, index) {
     this.setState({
       currentMatch: match,
@@ -135,6 +145,10 @@ export default class MatchesList extends Component {
 
     for (let i = 0; i < this.state.stageValue.length; i++) {
       params.append('stage', this.state.stageValue[i].value);
+    }
+
+    if(this.state.isOnlyComplete){
+      params.append('complete', true)
     }
 
     MatchDataService.findByCode(params.toString())
@@ -186,7 +200,7 @@ export default class MatchesList extends Component {
     };
 
     //console.log(this.state.myCharValue);
-    console.log(this.state.oppCharValue);
+    console.log(this.state.isOnlyComplete);
     return (
       <div className="list row">
         <div className="col-md-8">
@@ -231,6 +245,15 @@ export default class MatchesList extends Component {
                 isMulti 
               />
             </div>
+            <label>
+              <input
+                name="isOnlyComplete"
+                type="checkbox"
+                value={this.state.isOnlyComplete}
+                onChange={this.onChangeOnlyComplete}
+              />
+                Exclude games ending in LRA Start
+            </label>
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
