@@ -238,7 +238,7 @@ function parse_slp(filename, arr){
         {
           playerIndex: settings.players[0].playerIndex,
           characterId: settings.players[0].characterId,
-          characerColor: settings.players[0].characterColor,
+          characterColor: settings.players[0].characterColor,
           code: metadata.players[0].names.code,
           characterString: char_dict[settings.players[0].characterId],
           actionCounts: {
@@ -273,7 +273,7 @@ function parse_slp(filename, arr){
         {
           playerIndex: settings.players[1].playerIndex,
           characterId: settings.players[1].characterId,
-          characerColor: settings.players[1].characterColor,
+          characterColor: settings.players[1].characterColor,
           code: metadata.players[1].names.code,
           characterString: char_dict[settings.players[1].characterId],
           actionCounts: {
