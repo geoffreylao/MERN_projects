@@ -7,6 +7,62 @@ import 'react-dates/initialize';
 import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 
+function arrayTally(arr){
+  var thingToTally = [];
+  var occurences = [];
+  var prev;
+
+  arr.sort();
+  for (let i = 0; i < arr.length; i++) {
+    if(arr[i] !== prev){
+      thingToTally.push(arr[i]);
+      occurences.push(1);
+    } else {
+      occurences[occurences.length - 1]++;
+    }        
+    prev = arr[i];
+  }
+  return [thingToTally,occurences];
+}
+
+function myCharColor(connect_code, res){
+  var charArr = []
+
+  for (let i = 0; i < res.length; i++) {
+    if(res[i].players[0].code === connect_code){
+      var charId = res[i].players[0].characterId
+    } 
+    
+    if(res[i].players[1].code === connect_code){
+      charId = res[i].players[1].characterId
+    }
+    charArr.push(charId);  
+  }
+
+  var charResult = arrayTally(charArr);
+
+  var myMostUsedCharId = charResult[0][charResult[1].indexOf(Math.max(...charResult[1]))]
+
+  var colorArr = []
+
+  for (let i = 0; i < res.length; i++) {
+    if(res[i].players[0].code === connect_code && res[i].players[0].characterId === myMostUsedCharId){
+      var charColor = res[i].players[0].characerColor
+      colorArr.push(charColor); 
+    } 
+    
+    if(res[i].players[1].code === connect_code && res[i].players[1].characterId === myMostUsedCharId){
+      charColor = res[i].players[1].characerColor
+      colorArr.push(charColor); 
+    }    
+  }
+
+  var coloResult = arrayTally(colorArr);
+  var myMostUsedColorId = coloResult[0][coloResult[1].indexOf(Math.max(...coloResult[1]))];
+
+  return [myMostUsedCharId, myMostUsedColorId];
+}
+
 export default class MatchesList extends Component {
   constructor(props) {
     super(props);
@@ -17,10 +73,13 @@ export default class MatchesList extends Component {
     this.onChangeOnlyComplete = this.onChangeOnlyComplete.bind(this);
 
     this.state = {
+      // matches 
       matches: [],
       matchesLoading: "",
       currentMatch: null,
       currentIndex: -1,
+
+      // search params
       searchCode: "",
       oppCode: "",
       selectCharacters: [],
@@ -30,7 +89,10 @@ export default class MatchesList extends Component {
       stageValue: [],
       isOnlyComplete: false,
       startDate: null,
-      endDate: null
+      endDate: null,
+
+      // data
+      myMain: ""
     };
   }
 
@@ -169,9 +231,10 @@ export default class MatchesList extends Component {
       .then(response => {
         this.setState({
           matches: response.data,
-          matchesLoaded: "loaded"
+          matchesLoaded: "loaded",
+          myMain: myCharColor(this.state.searchCode, response.data)
         });
-        console.log(response.data);
+        console.log(response.data);      
       })
       .catch(e => {
         this.setState({
@@ -181,7 +244,7 @@ export default class MatchesList extends Component {
   }
 
   render() {
-    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex, oppCode } = this.state;
+    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex, oppCode, myMain } = this.state;
     
     const renderMatchList = () => {
       if (matchesLoaded === "loaded") {
@@ -290,6 +353,7 @@ export default class MatchesList extends Component {
         </div>
         <div className="col-md-6">
           <h4>Matches List</h4>
+          {myMain}
           {renderMatchList()}
         </div>
         <div className="col-md-6">
