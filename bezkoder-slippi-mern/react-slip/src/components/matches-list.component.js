@@ -505,18 +505,11 @@ export default class MatchesList extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchCode = this.onChangeSearchCode.bind(this);
-    this.setActiveMatch = this.setActiveMatch.bind(this);
     this.searchCode = this.searchCode.bind(this);
     this.onChangeOppCode = this.onChangeOppCode.bind(this);
     this.onChangeOnlyComplete = this.onChangeOnlyComplete.bind(this);
 
     this.state = {
-      // matches 
-      matches: [],
-      matchesLoading: "",
-      currentMatch: null,
-      currentIndex: -1,
-
       // search params
       searchCode: "",
       oppCode: "",
@@ -620,12 +613,6 @@ export default class MatchesList extends Component {
     })
   }
 
-  setActiveMatch(match, index) {
-    this.setState({
-      currentMatch: match,
-      currentIndex: index
-    });
-  }
 
   searchCode() {
     
@@ -633,7 +620,7 @@ export default class MatchesList extends Component {
     let myoppcode = this.state.oppCode.replace("#", "-").toUpperCase();
 
     this.setState({
-      matchesLoaded: "loading"
+      statsLoaded: "loading"
     });
 
     let params = new URLSearchParams(`code=${mycode}`)
@@ -670,7 +657,7 @@ export default class MatchesList extends Component {
       .then(response => {
         this.setState({
           matches: response.data,
-          matchesLoaded: "loaded",
+          statsLoaded: "loaded",
           myMain: myCharColor(this.state.searchCode, response.data),
           myStats: getStats(this.state.searchCode, response.data)
         });
@@ -679,35 +666,28 @@ export default class MatchesList extends Component {
       })
       .catch(e => {
         this.setState({
-          matchesLoaded: "error"
+          statsLoaded: "error"
         });
       }); 
   }
 
   render() {
-    const { searchCode, matches, matchesLoaded, currentMatch, currentIndex, oppCode, myMain, myStats } = this.state;
+    const { searchCode, statsLoaded, oppCode, myMain, myStats } = this.state;
 
-    const renderMatchList = () => {
-      if (matchesLoaded === "loaded") {
-        return(<div></div>
-          // <ul className="list-group">
-          //   {matches &&
-          //     matches.map((match, index) => (
-          //       <li
-          //         className={
-          //           "list-group-item " +
-          //           (index === currentIndex ? "active" : "")
-          //         }
-          //         onClick={() => this.setActiveMatch(match, index)}
-          //         key={index}
-          //       >
-          //         {match.metadata.winner}
-          //       </li>
-          //     ))}
-          // </ul>
+    const renderStats = () => {
+      if (statsLoaded === "loaded") {
+        return(
+          <div className="col-md-12">
+            <h4>Stats</h4>
+            <div id="container">
+                <img src="cssp1bg.png" width="272" height="376" alt=""/>
+                <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`} width="272" height="376" alt=""/>
+                <img src="cssp1.png" width="272" height="376" alt=""/>
+            </div>
+          </div>
         )
       }
-      else if (matchesLoaded === "loading")
+      else if (statsLoaded === "loading")
       {
         return(
           <div>
@@ -719,7 +699,7 @@ export default class MatchesList extends Component {
 
     return (
       <div className="list row">
-        <div className="col-md-8">
+        <div className="col-md-12">
             <input
               type="text"
               className="form-control"
@@ -792,71 +772,8 @@ export default class MatchesList extends Component {
               </button>
             </div>
         </div>
-        <div className="col-md-6">
-          <h4>Matches List</h4>
-          <div id="container">
-              <img src="cssp1bg.png" />
-              <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`}/>
-              <img src="cssp1.png" />
-          </div>
-        {myMain}
-        {renderMatchList()}
-         {/* {myStats.totalMatches} */}
-        </div>
-
-        <div className="col-md-6">
-          {currentMatch ? (
-            <div>
-              <h4>match</h4>
-              <div>
-                <label>
-                  <strong>players.code 1:</strong>
-                </label>{" "}
-                {currentMatch.players[0].code}
-              </div>
-              <div>
-                <label>
-                  <strong>players.code 2:</strong>
-                </label>{" "}
-                {currentMatch.players[1].code}
-              </div>
-              <div>
-                <label>
-                  <strong>players.chracterString 1:</strong>
-                </label>{" "}
-                {currentMatch.players[0].characterString}
-              </div>
-              <div>
-                <label>
-                  <strong>players.chracterString 2:</strong>
-                </label>{" "}
-                {currentMatch.players[1].characterString}
-              </div>
-              <div>
-                <label>
-                  <strong>settings.stageString:</strong>
-                </label>{" "}
-                {currentMatch.settings.stageString}
-              </div>
-              <div>
-                <label>
-                  <strong>metadata.gameComplete:</strong>
-                </label>{" "}
-                {currentMatch.metadata.gameComplete.toString()}
-              </div>
-              <div>
-                <label>
-                  <strong>metadata.startAt:</strong>
-                </label>{" "}
-                {currentMatch.metadata.startAt.toString()}
-              </div>
-            </div>
-          ) : (
-            <div>
-              <br />
-              <p>Please click on a match...</p>
-            </div>
-          )}
+        <div className="col-md-12">
+          {renderStats()}
         </div>
       </div>
     );
