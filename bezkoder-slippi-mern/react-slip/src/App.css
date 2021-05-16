@@ -50,3 +50,14 @@ h3 {
   font-size: 18px;
 }
 
+#container {
+  position: relative;
+}
+
+#container img {
+  border-style: solid;
+  border-color: #980000;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

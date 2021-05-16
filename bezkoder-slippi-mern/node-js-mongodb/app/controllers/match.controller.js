@@ -231,9 +231,10 @@ function parse_slp(filename, arr){
         startAt: new Date(metadata.startAt),
         lastFrame: metadata.lastFrame,
         minutes: stats.overall[0].inputsPerMinute.total,
-        game_complete: check_complete(stats),
-        winner: check_winner(stats)
-      },
+        gameComplete: check_complete(stats),
+        winner: check_winner(stats),
+        firstBlood: metadata.players[stats.stocks[0].playerIndex].names.code
+      }, 
       players: [
         {
           playerIndex: settings.players[0].playerIndex,
@@ -452,7 +453,7 @@ exports.findAll = (req, res) => {
     'players' : {$all: [{ $elemMatch : {code: mycode, characterString: {$in : characters} }},
       { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }}]},
     'settings.stageString' : {$in: stages},
-    'metadata.game_complete': {$in: complete},
+    'metadata.gameComplete': {$in: complete},
     'metadata.startAt' : {
       $gte: startdate,
       $lte: enddate
@@ -473,7 +474,7 @@ exports.findAllComplete = (req, res) => {
   const code = req.query.code;
   var condition = code ? { 'players.code': { $regex: new RegExp(code), $options: "i" } } : {};
 
-  Match.find({condition, 'metadata.game_complete' : true})
+  Match.find({condition, 'metadata.gameComplete' : true})
     .then(data => {
       res.send(data);
     })
