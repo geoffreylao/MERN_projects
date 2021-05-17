@@ -62,3 +62,13 @@ h3 {
   left: 0;
   scale: 100%;
 }
+
+#text {
+  z-index: 100;
+  position: absolute;
+  color: #f3ede2;
+  font-size: 29px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  left: 60px;
+  top: 270px;
+}

@@ -26,14 +26,16 @@ function arrayTally(arr){
 }
 
 function myCharColor(connect_code, res){
+  var myconnect = connect_code.toUpperCase();
+
   var charArr = []
 
   for (let i = 0; i < res.length; i++) {
-    if(res[i].players[0].code === connect_code){
+    if(res[i].players[0].code === myconnect){
       var charId = res[i].players[0].characterId
     } 
     
-    if(res[i].players[1].code === connect_code){
+    if(res[i].players[1].code === myconnect){
       charId = res[i].players[1].characterId
     }
     charArr.push(charId);  
@@ -46,12 +48,12 @@ function myCharColor(connect_code, res){
   var colorArr = []
 
   for (let i = 0; i < res.length; i++) {
-    if(res[i].players[0].code === connect_code && res[i].players[0].characterId === myMostUsedCharId){
+    if(res[i].players[0].code === myconnect && res[i].players[0].characterId === myMostUsedCharId){
       var charColor = res[i].players[0].characterColor
       colorArr.push(charColor); 
     } 
     
-    if(res[i].players[1].code === connect_code && res[i].players[1].characterId === myMostUsedCharId){
+    if(res[i].players[1].code === myconnect && res[i].players[1].characterId === myMostUsedCharId){
       charColor = res[i].players[1].characterColor
       colorArr.push(charColor); 
     }    
@@ -511,7 +513,7 @@ export default class MatchesList extends Component {
 
     this.state = {
       // search params
-      searchCode: "",
+      searchCode: "GEFF#353",
       oppCode: "",
       selectCharacters: [],
       myCharValue: [],
@@ -524,7 +526,8 @@ export default class MatchesList extends Component {
 
       // data
       myMain: "",
-      myStats: ""
+      myStats: "",
+
     };
   }
 
@@ -662,7 +665,7 @@ export default class MatchesList extends Component {
           myStats: getStats(this.state.searchCode, response.data)
         });
         
-        console.log(getStats(this.state.searchCode, response.data));     
+        console.log(response.data);     
       })
       .catch(e => {
         this.setState({
@@ -677,12 +680,27 @@ export default class MatchesList extends Component {
     const renderStats = () => {
       if (statsLoaded === "loaded") {
         return(
-          <div className="col-md-12">
-            <h4>Stats</h4>
-            <div id="container">
-                <img src="cssp1bg.png" width="272" height="376" alt=""/>
-                <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`} width="272" height="376" alt=""/>
-                <img src="cssp1.png" width="272" height="376" alt=""/>
+          <div className="containter">
+            <div className="row">
+              <div className="col-sm-3">
+
+                <div id="container">
+                    <img src="cssp1bg.png" width="272" height="376" alt=""/>
+                    <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`} width="272" height="376" alt=""/>
+                    <img src="cssp1.png" width="272" height="376" alt=""/>
+                    <p id="text">
+                      {searchCode.toUpperCase()}
+                    </p>
+                </div>
+              </div>
+              <div className="col-sm-4">
+                <p>
+                  {myStats.totalMatches} games <br/>
+                  {myStats.totalTime} time played <br/>
+                  {myStats.totalLRAStart} L+R+A+Starts <br/>
+                  {myStats.totalTimeouts} Timeouts 
+                </p>
+              </div>
             </div>
           </div>
         )
@@ -773,6 +791,14 @@ export default class MatchesList extends Component {
             </div>
         </div>
         <div className="col-md-12">
+        {/* <div id="container">
+                <img src="cssp1bg.png" width="272" height="376" alt=""/>
+                <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`} width="272" height="376" alt=""/>
+                <img src="cssp1.png" width="272" height="376" alt=""/>
+                <p id="text">
+                  GEFF#353
+                </p>
+            </div> */}
           {renderStats()}
         </div>
       </div>
