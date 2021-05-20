@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AddMatch from "./components/add-match.component";
-import MatchesList from "./components/matches-list.component";
+import MatchStats from "./components/match-stats.component";
 
 class App extends Component {
   render() {
@@ -30,7 +30,7 @@ class App extends Component {
 
         <div className="container mt-3">
           <Switch>
-            <Route exact path={["/", "/matches"]} component={MatchesList} />
+            <Route exact path={["/", "/matches"]} component={MatchStats} />
             <Route exact path="/add" component={AddMatch} />
           </Switch>
         </div>

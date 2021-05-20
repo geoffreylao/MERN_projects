@@ -7,6 +7,8 @@ import 'react-dates/initialize';
 import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 
+import Donut from './charts/donut-chart.component';
+
 function arrayTally(arr){
   var thingToTally = [];
   var occurences = [];
@@ -503,7 +505,7 @@ function getStats(connect_code, res){
   return resObj;
 }
 
-export default class MatchesList extends Component {
+export default class MatchStats extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchCode = this.onChangeSearchCode.bind(this);
@@ -680,10 +682,9 @@ export default class MatchesList extends Component {
     const renderStats = () => {
       if (statsLoaded === "loaded") {
         return(
-          <div className="containter">
+          <div className="containter-fluid">
             <div className="row">
-              <div className="col-sm-3">
-
+              <div className="col-sm">
                 <div id="container">
                     <img src="cssp1bg.png" width="272" height="376" alt=""/>
                     <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`} width="272" height="376" alt=""/>
@@ -693,13 +694,21 @@ export default class MatchesList extends Component {
                     </p>
                 </div>
               </div>
-              <div className="col-sm-4">
+              <div className="col-sm">
                 <p>
                   {myStats.totalMatches} games <br/>
                   {myStats.totalTime} time played <br/>
                   {myStats.totalLRAStart} L+R+A+Starts <br/>
                   {myStats.totalTimeouts} Timeouts 
                 </p>
+              </div>
+              <div className="col-sm-6">
+                <Donut
+                  labels={[myStats.totalLosses + ' Loss', myStats.totalWins + ' Wins']}
+                  data={[myStats.totalLosses, myStats.totalWins]}
+                  title='Winrate'
+                  percentage = {parseInt((myStats.totalWins/(myStats.totalLosses + myStats.totalWins)) * 100)}
+                />
               </div>
             </div>
           </div>

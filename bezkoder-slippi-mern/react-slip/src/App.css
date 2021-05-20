@@ -61,6 +61,7 @@ h3 {
   top: 0;
   left: 0;
   scale: 100%;
+
 }
 
 #text {
@@ -71,4 +72,11 @@ h3 {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   left: 60px;
   top: 270px;
+}
+
+.col-sm, .col-sm-6 {
+  border-style: solid;
+  border-color: black;
+  display: inline-block;
+  height: 400px;
 }
