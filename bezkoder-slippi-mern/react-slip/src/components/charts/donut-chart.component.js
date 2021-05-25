@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Doughnut} from 'react-chartjs-2';
-import "chartjs-plugin-doughnut-innertext";
 import "chartjs-plugin-doughnutlabel";
+import "chartjs-plugin-labels";
 
 export default class Donut extends Component {
   render() {
@@ -36,6 +36,8 @@ export default class Donut extends Component {
               }
             ]
           }}
+          width={'140%'}
+          height={'100%'}
           options={{
             tooltips: {enabled: false},
             title:{
@@ -59,6 +61,9 @@ export default class Donut extends Component {
                     color: color
                   }
                 ]
+              },
+              labels: {
+                render: 'image'
               }
             }
           }}

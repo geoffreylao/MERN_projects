@@ -74,9 +74,16 @@ h3 {
   top: 270px;
 }
 
-.col-sm, .col-sm-6 {
+.col-sm, .col-sm-6  {
   border-style: solid;
   border-color: black;
   display: inline-block;
   height: 400px;
+}
+
+.col-md {
+  border-style: solid;
+  border-color: black;
+  display: inline-block;
+  height: 600px;
 }

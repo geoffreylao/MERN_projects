@@ -10,14 +10,15 @@ class App extends Component {
   render() {
     return (
       <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
+        <nav className="navbar navbar-expand navbar-dark bg-secondary">
           <a href="/matches" className="navbar-brand">
-            Slippify Wrapped
+          <img src="slippicharts.png" class="img-fluid" width="48" height="48"></img>
+                  Chart.slp
           </a>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={"/matches"} className="nav-link">
-                VIEW STATS
+                GENERATE CHARTS
               </Link>
             </li>
             <li className="nav-item">
