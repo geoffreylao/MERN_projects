@@ -9,6 +9,8 @@ import 'react-dates/lib/css/_datepicker.css';
 
 import Donut from './charts/donut-chart.component';
 import PieChart from './charts/pie-chart.component';
+import CharBarChart from './charts/char-bar-chart.component';
+import StageBarChart from './charts/stage-bar-chart.component';
 
 var charDict = {
   0 : "Captain Falcon.png",
@@ -126,6 +128,105 @@ var charhoverColorDict = {
   25 : 'rgba(128, 0, 64, 0.6)'
 }
 
+var stageDict = {
+  2 : "Fountain Of Dreams.png",
+  3 : "Pokemon Stadium.png",
+  4 : "Peachs Castle.png",
+  5 : "Kongo Jungle.png",
+  6 : "Brinstar.png",
+  7 : "Corneria.png",
+  8 : "Yoshis Story.png",
+  9 : "Onett.png",
+  10 : "Mute City.png",
+  11 : "Rainbow Cruise.png",
+  12 : "Jungle Japes.png",
+  13 : "Great Bay.png",
+  14 : "Hyrule Temple.png",
+  15 : "Brinstar Depths.png",
+  16 : "Yoshis Island.png",
+  17 : "Green Greens.png",
+  18 : "Fourside.png",
+  19 : "Mushroom Kingdom.png",
+  20 : "Mushroom Kingdom 2.png",
+  22 : "Venom.png",
+  23 : "Poke Floats.png",
+  24 : "Big Blue.png",
+  25 : "Icicle Mountain.png",
+  26 : "Icetop.png",
+  27 : "Flat Zone.png",
+  28 : "Dreamland.png",
+  29 : "Yoshis Island N64.png",
+  30 : "Kongo Jungle N64.png",
+  31 : "Battlefield.png",
+  32 : "Final Destination.png"
+}
+
+var stagebackgroundColorDict = {
+  2 : 'rgba(79, 60, 97, 0.2)', // rgb(79,60,97)
+  3 : 'rgba(141, 186, 145, 0.4)', //rgb(78,101,80)
+  4 : 'rgba(255, 99, 132, 0.2)',
+  5 : 'rgba(255, 99, 132, 0.2)',
+  6 : 'rgba(255, 99, 132, 0.2)',
+  7 : 'rgba(255, 99, 132, 0.2)',
+  8 : 'rgba(151,195,134, 0.3)', //rgb(151,195,134)
+  9 : 'rgba(255, 99, 132, 0.2)',
+  10 : 'rgba(255, 99, 132, 0.2)',
+  11 : 'rgba(255, 99, 132, 0.2)',
+  12 : 'rgba(255, 99, 132, 0.2)',
+  13 : 'rgba(255, 99, 132, 0.2)',
+  14 : 'rgba(255, 99, 132, 0.2)',
+  15 : 'rgba(255, 99, 132, 0.2)',
+  16 : 'rgba(255, 99, 132, 0.2)',
+  17 : 'rgba(255, 99, 132, 0.2)',
+  18 : 'rgba(255, 99, 132, 0.2)',
+  19 : 'rgba(255, 99, 132, 0.2)',
+  20 : 'rgba(255, 99, 132, 0.2)',
+  22 : 'rgba(255, 99, 132, 0.2)',
+  23 : 'rgba(255, 99, 132, 0.2)',
+  24 : 'rgba(255, 99, 132, 0.2)',
+  25 : 'rgba(255, 99, 132, 0.2)',
+  26 : 'rgba(255, 99, 132, 0.2)',
+  27 : 'rgba(255, 99, 132, 0.2)',
+  28 : 'rgba(117, 191, 226, 0.4)', //rgb(117,191,226)
+  29 : 'rgba(255, 99, 132, 0.2)',
+  30 : 'rgba(255, 99, 132, 0.2)',
+  31 : 'rgba(33, 35, 48, 0.2)', //rgb(33,35,48)
+  32 : 'rgba(54, 15, 127, 0.2)', //rgb(54,15,127)
+}
+
+var stageborderColorDict = {
+  2 : 'rgba(28, 1, 54, 1)',
+  3 : 'rgba(78,101,80, 1)',
+  4 : 'rgba(255, 99, 132, 0.2)',
+  5 : 'rgba(255, 99, 132, 0.2)',
+  6 : 'rgba(255, 99, 132, 0.2)',
+  7 : 'rgba(255, 99, 132, 0.2)',
+  8 : 'rgba(18, 140, 99, 1)',
+  9 : 'rgba(255, 99, 132, 0.2)',
+  10 : 'rgba(255, 99, 132, 0.2)',
+  11 : 'rgba(255, 99, 132, 0.2)',
+  12 : 'rgba(255, 99, 132, 0.2)',
+  13 : 'rgba(255, 99, 132, 0.2)',
+  14 : 'rgba(255, 99, 132, 0.2)',
+  15 : 'rgba(255, 99, 132, 0.2)',
+  16 : 'rgba(255, 99, 132, 0.2)',
+  17 : 'rgba(255, 99, 132, 0.2)',
+  18 : 'rgba(255, 99, 132, 0.2)',
+  19 : 'rgba(255, 99, 132, 0.2)',
+  20 : 'rgba(255, 99, 132, 0.2)',
+  22 : 'rgba(255, 99, 132, 0.2)',
+  23 : 'rgba(255, 99, 132, 0.2)',
+  24 : 'rgba(255, 99, 132, 0.2)',
+  25 : 'rgba(255, 99, 132, 0.2)',
+  26 : 'rgba(255, 99, 132, 0.2)',
+  27 : 'rgba(255, 99, 132, 0.2)',
+  28 : 'rgba(46, 85, 209, 1)',
+  29 : 'rgba(255, 99, 132, 0.2)',
+  30 : 'rgba(255, 99, 132, 0.2)',
+  31 : 'rgba(33, 35, 48, 1)',
+  32 : 'rgba(54, 15, 127, 1)',
+}
+
 function arrayTally(arr){
   var thingToTally = [];
   var occurences = [];
@@ -198,24 +299,6 @@ function displayTime(currentFrame) {
 }
 
 function getStats(connect_code, res){
-  // Char array Tier List Sorted
-  var tierListArr = [
-    2, 9, 15, 20, // Fox, Marth, Puff, Falco
-    19, 0, 12, // Sheik, Falcon, Peach
-    14, 13, 17, 16, // Ic, Pika, Yoshi, Samus
-    7, 22, // Luigi, Doc
-    25, 8, // Ganon, Mario
-    1, 21, 6, 3, // DK, YL, Link, G&W
-    10, 23, 24, 11, 18, // Mew2, Roy, Pichu, Ness, Zelda
-    4, 5 // Kirby, Bowser
-  ];
-
-  // Stages W/L
-  var stageArr = [
-    "FOUNTAIN_OF_DREAMS","POKEMON_STADIUM","YOSHIS_STORY",
-    "DREAMLAND","BATTLEFIELD","FINAL_DESTINATION"
-  ]
-
   var myTotalMatches = 0,myTotalTime,myTotalLRAStart = 0,myTotalTimeouts = 0,
   myTotalWins = 0,myTotalLosses = 0,myWinrate,
   myCharUsage,myOppCharUsage,myVsCharWins,myVsCharLoss,myAsCharWins,
@@ -683,6 +766,126 @@ function createPieChartCharacterUsage(charUsage, title){
 
 }
 
+function createBarChartCharacterWinrate(myDict, charUsage, charWins, charLoss, title){
+  var dict = {}
+  var windict = {}
+  var lossdict = {}
+
+  for (let i = 0; i < charUsage.length; i++) {        
+    dict[i] = charUsage[i];
+    windict[i] = charWins[i];
+    lossdict[i] = charLoss[i];
+  }
+
+  var items = Object.keys(dict).map(function(key) {
+    return [key, dict[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  console.log(items)
+
+  var charLabels = [];
+  var charData = [];
+  var charImage = [];
+  var charbackgroundColor = [];
+  var charborderColor = []
+
+  for (let j = 0; j < items.length; j++) {
+    if((items[j][1]) !== 0){
+      charLabels.push((myDict[items[j][0]]).replace(".png", "") + " (" + items[j][1] + " games)")
+
+      var wins = charWins[items[j][0]];
+      var loss = charLoss[items[j][0]];
+
+      if(wins === 0){
+        charData.push(0) 
+      }else{
+        charData.push(parseInt (wins/(wins+loss)* 100) ) 
+      }
+
+      charImage.push(myDict[items[j][0]]);
+      charbackgroundColor.push(charbackgroundColorDict[items[j][0]]);
+      charborderColor.push(charborderColorDict[items[j][0]]);
+    }    
+  }
+
+  return <CharBarChart 
+            charData = {charData}
+            charLabels = {charLabels}
+            charImage = {charImage}
+            charbackgroundColor = {charbackgroundColor}
+            charborderColor = {charborderColor}
+            title = {title}
+            type = 'char'
+/>
+
+}
+
+function createBarChartStageWinrate(myDict, stageWins, stageLoss, title){
+  var stageUsage = []
+  for (let k = 0; k < stageWins.length; k++) {
+    stageUsage[k] = stageWins[k] + stageLoss[k]    
+  }
+
+  var dict = {}
+  var windict = {}
+  var lossdict = {}
+
+  for (let i = 0; i < stageUsage.length; i++) {        
+    dict[i] = stageUsage[i];
+    windict[i] = stageWins[i];
+    lossdict[i] = stageLoss[i];
+  }
+
+  var items = Object.keys(dict).map(function(key) {
+    return [key, dict[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  console.log(items)
+
+  var stageLabels = [];
+  var stageData = [];
+  var stageImage = [];
+  var stagebackgroundColor = [];
+  var stageborderColor = []
+
+  for (let j = 0; j < items.length; j++) {
+    if((items[j][1]) !== 0){
+      stageLabels.push((myDict[items[j][0]]).replace(".png", "") + " (" + items[j][1] + " games)")
+
+      var wins = stageWins[items[j][0]];
+      var loss = stageLoss[items[j][0]];
+
+      if(wins === 0){
+        stageData.push(0) 
+      }else{
+        stageData.push(parseInt (wins/(wins+loss)* 100) ) 
+      }
+
+      stageImage.push(myDict[items[j][0]]);
+      stagebackgroundColor.push(stagebackgroundColorDict[items[j][0]]);
+      stageborderColor.push(stageborderColorDict[items[j][0]]);
+    }    
+  }
+
+  return < StageBarChart 
+            stageData = {stageData.slice(0,6)}
+            stageLabels = {stageLabels.slice(0,6)}
+            stageImage = {stageImage}
+            stagebackgroundColor = {stagebackgroundColor}
+            stageborderColor = {stageborderColor}
+            title = {title}
+            type = 'stage'
+/>
+
+}
 
 export default class MatchStats extends Component {
   constructor(props) {
@@ -855,9 +1058,6 @@ export default class MatchStats extends Component {
   }
 
   render() {
-    
-
-
     const { searchCode, statsLoaded, oppCode, myMain, myStats } = this.state;
 
     const renderStats = () => {
@@ -895,6 +1095,15 @@ export default class MatchStats extends Component {
             <div className="row">
               <div className="col-md">{createPieChartCharacterUsage(myStats.charUsage, 'Character Usage')}</div>
               <div className="col-md">{createPieChartCharacterUsage(myStats.oppCharUsage, 'Opponent Character Usage')}</div>
+            </div>
+            <div className="row">
+              <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.charUsage, myStats.asCharWins, myStats.asCharLoss, 'Character Winrate %')}</div>              
+            </div>
+            <div className="row">
+              <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.oppCharUsage, myStats.vsCharWins, myStats.vsCharLoss, 'Opponent Character Winrate %')}</div>
+            </div>
+            <div className="row">
+              <div className="col-md" id="bigbar">{createBarChartStageWinrate(stageDict, myStats.stageWins, myStats.stageLoss, 'Stage Winrate %')}</div>
             </div>
           </div>
         )
@@ -999,4 +1208,4 @@ export default class MatchStats extends Component {
     );
   }
 
-}
+} 

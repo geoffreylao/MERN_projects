@@ -12,7 +12,7 @@ class App extends Component {
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-secondary">
           <a href="/matches" className="navbar-brand">
-          <img src="slippicharts.png" class="img-fluid" width="48" height="48"></img>
+          <img src="slippicharts.png" class="img-fluid" width="48" height="48" alt=""></img>
                   Chart.slp
           </a>
           <div className="navbar-nav mr-auto">

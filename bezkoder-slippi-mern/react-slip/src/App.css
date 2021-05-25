@@ -87,3 +87,11 @@ h3 {
   display: inline-block;
   height: 600px;
 }
+
+#bigbar {
+  border-style: solid;
+  border-color: black;
+  display: inline-block;
+  height: 1000px;
+}
+
