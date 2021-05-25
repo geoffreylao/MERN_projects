@@ -19,11 +19,11 @@ export default class PieChart extends Component {
               }
             ]
           }}
-          width={'280%'}
-          height={'300%'}
+          width={'100%'}
+          height={'500%'}
           options={{   
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             title:{
               display: true,
               text: this.props.title,

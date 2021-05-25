@@ -162,7 +162,7 @@ var stageDict = {
 }
 
 var stagebackgroundColorDict = {
-  2 : 'rgba(79, 60, 97, 0.2)', // rgb(79,60,97)
+  2 : 'rgba(79, 60, 97, 0.3)', // rgb(79,60,97)
   3 : 'rgba(141, 186, 145, 0.4)', //rgb(78,101,80)
   4 : 'rgba(255, 99, 132, 0.2)',
   5 : 'rgba(255, 99, 132, 0.2)',
@@ -190,8 +190,8 @@ var stagebackgroundColorDict = {
   28 : 'rgba(117, 191, 226, 0.4)', //rgb(117,191,226)
   29 : 'rgba(255, 99, 132, 0.2)',
   30 : 'rgba(255, 99, 132, 0.2)',
-  31 : 'rgba(33, 35, 48, 0.2)', //rgb(33,35,48)
-  32 : 'rgba(54, 15, 127, 0.2)', //rgb(54,15,127)
+  31 : 'rgba(33, 35, 48, 0.3)', //rgb(33,35,48)
+  32 : 'rgba(54, 15, 127, 0.3)', //rgb(54,15,127)
 }
 
 var stageborderColorDict = {
@@ -1208,4 +1208,4 @@ export default class MatchStats extends Component {
     );
   }
 
-} 
+}
