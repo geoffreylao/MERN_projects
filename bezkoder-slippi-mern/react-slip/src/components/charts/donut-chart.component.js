@@ -19,7 +19,7 @@ export default class Donut extends Component {
             labels: this.props.labels,
             datasets: [
               {
-                label: 'winrate label',
+                label: ['Opponent', this.props.player],
                 backgroundColor: [
                   'rgba(255, 99, 132, 0.2)',
                   'rgba(165, 247, 184, 0.5)',
@@ -36,10 +36,22 @@ export default class Donut extends Component {
               }
             ]
           }}
-          width={'140%'}
-          height={'100%'}
+          width={'100%'}
+          height={'110%'}
           options={{
-            tooltips: {enabled: false},
+            responsive:true,
+            tooltips: {
+              callbacks: {
+                label: function(tooltipItem, data) {
+                  var dataset = data.datasets[tooltipItem.datasetIndex];
+        
+                  return dataset.label[tooltipItem.index]
+                }
+              },
+              position: 'average',
+              yAlign: 'bottom',
+              
+            },            
             title:{
               display:true,
               text: this.props.title,

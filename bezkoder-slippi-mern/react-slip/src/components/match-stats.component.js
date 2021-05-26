@@ -11,8 +11,10 @@ import Donut from './charts/donut-chart.component';
 import PieChart from './charts/pie-chart.component';
 import CharBarChart from './charts/char-bar-chart.component';
 import StageBarChart from './charts/stage-bar-chart.component';
+import VerticalBarChart from './charts/vertical-bar-chart.component';
 
-var charDict = {
+var charDict =
+ {
   0 : "Captain Falcon.png",
   1 : "Donkey Kong.png",
   2 : "Fox.png" ,
@@ -1083,12 +1085,14 @@ export default class MatchStats extends Component {
                   {myStats.totalTimeouts} Timeouts 
                 </p>
               </div>
+              {/* WinRate Donut Chart */}
               <div className="col-sm-6">
                 <Donut
                   labels={[myStats.totalLosses + ' Loss', myStats.totalWins + ' Wins']}
                   data={[myStats.totalLosses, myStats.totalWins]}
                   title='Winrate'
                   percentage = {parseInt((myStats.totalWins/(myStats.totalLosses + myStats.totalWins)) * 100)}
+                  player={this.state.searchCode}
                 />
               </div>
             </div>
@@ -1104,6 +1108,143 @@ export default class MatchStats extends Component {
             </div>
             <div className="row">
               <div className="col-md" id="bigbar">{createBarChartStageWinrate(stageDict, myStats.stageWins, myStats.stageLoss, 'Stage Winrate %')}</div>
+            </div>
+            <div className="row">
+              <div className="col-sm">
+                <Donut
+                  labels={[myStats.oppNeutralWins, myStats.neutralWins ]}
+                  data={[myStats.oppNeutralWins, myStats.neutralWins ]}
+                  title='Neutral Wins'
+                  percentage = {parseInt((myStats.neutralWins/(myStats.oppNeutralWins + myStats.neutralWins)) * 100)}
+                  player={this.state.searchCode}
+                />
+              </div>   
+              <div className="col-sm">
+                <Donut
+                  labels={[myStats.oppCounterHits, myStats.counterHits, ]}
+                  data={[myStats.oppCounterHits, myStats.counterHits]}
+                  title='Counter Hits'
+                  percentage = {parseInt((myStats.counterHits/(myStats.oppCounterHits + myStats.counterHits)) * 100)}
+                  player={this.state.searchCode}
+                />
+              </div>    
+              <div className="col-sm">
+                <Donut
+                  labels={[myStats.oppBeneficialTrades , myStats.beneficialTrades ]}
+                  data={[ myStats.oppBeneficialTrades, myStats.beneficialTrades]}
+                  title='Beneficial Trades'
+                  percentage = {parseInt((myStats.beneficialTrades/(myStats.oppBeneficialTrades + myStats.beneficialTrades)) * 100)}
+                  player={this.state.searchCode}
+                />
+              </div>  
+              <div className="col-sm">
+                <Donut
+                  labels={[myStats.oppFirstBloods, myStats.firstBloods]}
+                  data={[myStats.oppFirstBloods , myStats.firstBloods]}
+                  title='First Bloods'
+                  percentage = {parseInt((myStats.firstBloods/(myStats.oppFirstBloods + myStats.firstBloods)) * 100)}
+                  player={this.state.searchCode}
+                />
+              </div>         
+            </div>
+            <div className="row">
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Average KO Percent'
+                  data={[myStats.avgKOpercent , myStats.oppAvgKOpercent]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Openings Per KO'
+                  data={[myStats.openingsPerKO.toFixed(2) , myStats.oppOpeningsPerKO.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Successful Conversion Percent'
+                  data={[myStats.conversionRate , myStats.oppConversionRate]}
+                  player={this.state.searchCode}
+                />
+              </div>  
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Average Damage Per Opening'
+                  data={[myStats.avgDamagePerOpening , myStats.oppAvgDamagePerOpening]}
+                  player={this.state.searchCode}
+                />
+              </div>  
+            </div>
+            <div className="row">
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Highest Damage Punish'
+                  data={[myStats.bestPunish.toFixed(2) , myStats.oppBestPunish.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Lowest % Kill'
+                  data={[myStats.lowestKill.toFixed(2) , myStats.oppLowestKill.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Highest % Kill'
+                  data={[myStats.highestKill.toFixed(2) , myStats.oppHighestKill.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>  
+            </div>
+            <div className="row">
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='4 Stocks'
+                  data={[myStats.fourStocks , myStats.oppFourStocks]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Average Stocks Taken'
+                  data={[myStats.avgStocksTaken.toFixed(2) , myStats.oppAvgStocksTaken.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Average Stocks Won By'
+                  data={[myStats.avgStockDifferential.toFixed(2) , myStats.oppAvgStockDifferential.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>  
+            </div>
+            <div className="row">
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Inputs Per Minute'
+                  data={[myStats.inputsPM.toFixed(2) , myStats.oppIPM.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Digital IPM'
+                  data={[myStats.digitalIPM.toFixed(2) , myStats.oppDigitalIPM.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='Successful L Cancel %'
+                  data={[myStats.lcancels , myStats.oppLcancels]}
+                  player={this.state.searchCode}
+                />
+              </div>  
             </div>
           </div>
         )
