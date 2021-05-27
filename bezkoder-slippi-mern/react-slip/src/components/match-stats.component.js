@@ -12,6 +12,8 @@ import PieChart from './charts/pie-chart.component';
 import CharBarChart from './charts/char-bar-chart.component';
 import StageBarChart from './charts/stage-bar-chart.component';
 import VerticalBarChart from './charts/vertical-bar-chart.component';
+import ActionsBarChart from './charts/action-bar-chart.component';
+import MovesBarChart from './charts/moves-bar-chart.component';
 
 var charDict =
  {
@@ -323,9 +325,14 @@ function getStats(connect_code, res){
   myDigitalIPM,myOppDigitalIPM,myActionCountArr,myOppActionCountArr,
   myMoveUsageArr,myOppMoveUsageArr
 
+  var myTeamsCharUsage, myTeamsOthersCharUsage, myTeamsTotalMatches = 0 
+
   // Character Usage
   myCharUsage = new Array(26).fill(0);
   myOppCharUsage = new Array(26).fill(0);
+
+  myTeamsCharUsage = new Array(26).fill(0);
+  myTeamsOthersCharUsage = new Array(26).fill(0);
 
   // Character Wins
   myVsCharWins = new Array(26).fill(0);
@@ -340,21 +347,21 @@ function getStats(connect_code, res){
   myStageLoss = new Array(33).fill(0);
 
   // Action counts
-  myActionCountArr = new Array(7).fill(0);
-  myOppActionCountArr = new Array(7).fill(0);
+  myActionCountArr = Array.from({length: 26}, e => Array(7).fill(0));
+  myOppActionCountArr = Array.from({length: 26}, e => Array(7).fill(0));
 
   myMoveUsageArr = {
-    neutralWinMoves : new Array(63).fill(0),
-    counterHitMoves : new Array(63).fill(0),
-    tradeMoves : new Array(63).fill(0),
-    killMoves : new Array(63).fill(0)
+    neutralWinMoves : Array.from({length: 26}, e => Array(63).fill(0)),
+    counterHitMoves : Array.from({length: 26}, e => Array(63).fill(0)),
+    tradeMoves : Array.from({length: 26}, e => Array(63).fill(0)),
+    killMoves : Array.from({length: 26}, e => Array(63).fill(0))
   }
 
   myOppMoveUsageArr = {
-    neutralWinMoves : new Array(63).fill(0),
-    counterHitMoves : new Array(63).fill(0),
-    tradeMoves : new Array(63).fill(0),
-    killMoves : new Array(63).fill(0)
+    neutralWinMoves : Array.from({length: 26}, e => Array(63).fill(0)),
+    counterHitMoves : Array.from({length: 26}, e => Array(63).fill(0)),
+    tradeMoves : Array.from({length: 26}, e => Array(63).fill(0)),
+    killMoves : Array.from({length: 26}, e => Array(63).fill(0))
   }
 
   // Total Matches
@@ -363,6 +370,7 @@ function getStats(connect_code, res){
   var frames = 0;
 
   for (let i = 0; i < res.length; i++) {
+    if(!res[i].settings.isTeams){
       myTotalMatches++;
 
       frames += res[i].metadata.lastFrame;
@@ -454,7 +462,7 @@ function getStats(connect_code, res){
             
             if(res[i].players[j].conversions[k].didKill){
               if(res[i].players[j].conversions[k].moves[0])
-                {myMoveUsageArr.killMoves[res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
+                {myMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
               
 
               if(res[i].players[j].conversions[k].endPercent > myHighestKill){
@@ -467,15 +475,15 @@ function getStats(connect_code, res){
             switch(res[i].players[j].conversions[k].openingType){
               case 'neutral-win': 
               if(res[i].players[j].conversions[k].moves[0])
-                {myMoveUsageArr.neutralWinMoves[res[i].players[j].conversions[k].moves[0].moveId]++;}
+                {myMoveUsageArr.neutralWinMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[0].moveId]++;}
                 break;
               case 'counter-attack':
                 if(res[i].players[j].conversions[k].moves[0])
-                {myMoveUsageArr.counterHitMoves[res[i].players[j].conversions[k].moves[0].moveId]++;}
+                {myMoveUsageArr.counterHitMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[0].moveId]++;}
                 break;
               case 'trade':
                 if(res[i].players[j].conversions[k].moves[0])
-                {myMoveUsageArr.tradeMoves[res[i].players[j].conversions[k].moves[0].moveId]++;}
+                {myMoveUsageArr.tradeMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[0].moveId]++;}
                 break;
               default:
                 break;
@@ -483,13 +491,13 @@ function getStats(connect_code, res){
           }
   
           // Action Counts
-          myActionCountArr[0] +=  res[i].players[j].actionCounts.wavedashCount;
-          myActionCountArr[1] +=  res[i].players[j].actionCounts.wavelandCount;
-          myActionCountArr[2] +=  res[i].players[j].actionCounts.airDodgeCount;
-          myActionCountArr[3] +=  res[i].players[j].actionCounts.dashDanceCount;
-          myActionCountArr[4] +=  res[i].players[j].actionCounts.spotDodgeCount;
-          myActionCountArr[5] +=  res[i].players[j].actionCounts.ledgegrabCount;
-          myActionCountArr[6] +=  res[i].players[j].actionCounts.rollCount;
+          myActionCountArr[res[i].players[j].characterId][0] +=  res[i].players[j].actionCounts.wavedashCount;
+          myActionCountArr[res[i].players[j].characterId][1] +=  res[i].players[j].actionCounts.wavelandCount;
+          myActionCountArr[res[i].players[j].characterId][2] +=  res[i].players[j].actionCounts.airDodgeCount;
+          myActionCountArr[res[i].players[j].characterId][3] +=  res[i].players[j].actionCounts.dashDanceCount;
+          myActionCountArr[res[i].players[j].characterId][4] +=  res[i].players[j].actionCounts.spotDodgeCount;
+          myActionCountArr[res[i].players[j].characterId][5] +=  res[i].players[j].actionCounts.ledgegrabCount;
+          myActionCountArr[res[i].players[j].characterId][6] +=  res[i].players[j].actionCounts.rollCount;
   
         }else{
           myOppCharUsage[res[i].players[j].characterId]++;
@@ -520,7 +528,7 @@ function getStats(connect_code, res){
   
             if(res[i].players[j].conversions[k].didKill){
               if(res[i].players[j].conversions[k].moves[0])
-              {myOppMoveUsageArr.killMoves[res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
+              {myOppMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
               if(res[i].players[j].conversions[k].endPercent > myHighestKill){
                 myOppHighestKill = res[i].players[j].conversions[k].endPercent;
               }else if(res[i].players[j].conversions[k].endPercent < myLowestKill){
@@ -531,15 +539,15 @@ function getStats(connect_code, res){
             switch(res[i].players[j].conversions[k].openingType){
               case 'neutral-win': 
               if(res[i].players[j].conversions[k].moves[0])
-               { myOppMoveUsageArr.neutralWinMoves[res[i].players[j].conversions[k].moves[0].moveId]++;}
+               { myOppMoveUsageArr.neutralWinMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[0].moveId]++;}
                 break;
               case 'counter-attack':
                 if(res[i].players[j].conversions[k].moves[0])
-                {myOppMoveUsageArr.counterHitMoves[res[i].players[j].conversions[k].moves[0].moveId]++;}
+                {myOppMoveUsageArr.counterHitMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[0].moveId]++;}
                 break;
               case 'trade':
                 if(res[i].players[j].conversions[k].moves[0])
-                {myOppMoveUsageArr.tradeMoves[res[i].players[j].conversions[k].moves[0].moveId]++;}
+                {myOppMoveUsageArr.tradeMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[0].moveId]++;}
                 break;
               default:
                 break;
@@ -548,16 +556,27 @@ function getStats(connect_code, res){
           }
   
           // Action Counts
-          myOppActionCountArr[0] +=  res[i].players[j].actionCounts.wavedashCount;
-          myOppActionCountArr[1] +=  res[i].players[j].actionCounts.wavelandCount;
-          myOppActionCountArr[2] +=  res[i].players[j].actionCounts.airDodgeCount;
-          myOppActionCountArr[3] +=  res[i].players[j].actionCounts.dashDanceCount;
-          myOppActionCountArr[4] +=  res[i].players[j].actionCounts.spotDodgeCount;
-          myOppActionCountArr[5] +=  res[i].players[j].actionCounts.ledgegrabCount;
-          myOppActionCountArr[6] +=  res[i].players[j].actionCounts.rollCount;
+          myOppActionCountArr[res[i].players[j].characterId][0] +=  res[i].players[j].actionCounts.wavedashCount;
+          myOppActionCountArr[res[i].players[j].characterId][1] +=  res[i].players[j].actionCounts.wavelandCount;
+          myOppActionCountArr[res[i].players[j].characterId][2] +=  res[i].players[j].actionCounts.airDodgeCount;
+          myOppActionCountArr[res[i].players[j].characterId][3] +=  res[i].players[j].actionCounts.dashDanceCount;
+          myOppActionCountArr[res[i].players[j].characterId][4] +=  res[i].players[j].actionCounts.spotDodgeCount;
+          myOppActionCountArr[res[i].players[j].characterId][5] +=  res[i].players[j].actionCounts.ledgegrabCount;
+          myOppActionCountArr[res[i].players[j].characterId][6] +=  res[i].players[j].actionCounts.rollCount;
         }
       }
-     
+    }
+    else{
+      myTeamsTotalMatches++;
+
+      for (let j = 0; j < res[i].players.length; j++) {
+        if(res[i].players[j].code === connect_code){
+          myTeamsCharUsage[res[i].settings.players[j].characterId]++;
+        }else{
+          myTeamsOthersCharUsage[res[i].settings.players[j].characterId]++;
+        }
+      }
+    }   
   }
   // Total Time
   myTotalTime = displayTime(frames);
@@ -701,13 +720,19 @@ function getStats(connect_code, res){
 
     // Move Usage
     moveUsageArr : myMoveUsageArr,
-    oppMoveUsageArr : myOppMoveUsageArr
+    oppMoveUsageArr : myOppMoveUsageArr,
+
+    // Teams
+    teamsTotalMatches : myTeamsTotalMatches,
+    teamsCharUsage : myTeamsCharUsage,
+    teamsOtherCharUsage : myTeamsOthersCharUsage
   }
 
-  return resObj;
+  //console.log(resObj);
+  return resObj
 }
 
-function createPieChartCharacterUsage(charUsage, title){
+function createPieChartCharacterUsage(charUsage, title, labelBool){
   var dict = {}
 
   for (let i = 0; i < charUsage.length; i++) {        
@@ -764,6 +789,7 @@ function createPieChartCharacterUsage(charUsage, title){
             charborderColor = {charborderColor}
             charhoverBackgroundColor = {charhoverColor}
             title = {title}
+            labelBool = {labelBool}
 />
 
 }
@@ -889,6 +915,70 @@ function createBarChartStageWinrate(myDict, stageWins, stageLoss, title){
 
 }
 
+function actionsBarChartData(charUsage, actionArr, oppCharUsage, oppActionArr, checked){
+  // creates sorted 2d array for character id and character usage
+  var dict = {}
+
+  for (let i = 0; i < charUsage.length; i++) {        
+    dict[i] = charUsage[i];
+  }
+
+  var items = Object.keys(dict).map(function(key) {
+    return [key, dict[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var oppdict = {}
+
+  for (let i = 0; i < oppCharUsage.length; i++) {        
+    oppdict[i] = oppCharUsage[i];
+  }
+
+  var oppitems = Object.keys(dict).map(function(key) {
+    return [key, oppdict[key]];
+  });
+
+  oppitems.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var orderedActionsArr = []
+
+  for (let i = 0; i < items.length; i++) {
+    if(items[i][1] !== 0){
+      orderedActionsArr.push(
+        {
+          label: (charDict[items[i][0]]).replace(".png", ""),
+          data: actionArr[items[i][0]],
+          backgroundColor: charbackgroundColorDict[items[i][0]],
+          borderColor: charborderColorDict[items[i][0]],
+          borderWidth: 1,
+          stack: 'player'
+        }
+      )
+    }
+    if(oppitems[i][1] !== 0){
+      orderedActionsArr.push(
+        {
+          label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
+          data: oppActionArr[items[i][0]],
+          backgroundColor: charbackgroundColorDict[items[i][0]],
+          borderColor: charborderColorDict[items[i][0]],
+          borderWidth: 1,
+          stack: 'opponent',
+          hidden: !checked
+        }
+      )
+    }   
+  }
+
+  return orderedActionsArr;
+
+}
+
 export default class MatchStats extends Component {
   constructor(props) {
     super(props);
@@ -896,6 +986,7 @@ export default class MatchStats extends Component {
     this.searchCode = this.searchCode.bind(this);
     this.onChangeOppCode = this.onChangeOppCode.bind(this);
     this.onChangeOnlyComplete = this.onChangeOnlyComplete.bind(this);
+    this.handleCheckChange = this.handleCheckChange.bind(this);
 
     this.state = {
       // search params
@@ -913,6 +1004,10 @@ export default class MatchStats extends Component {
       // data
       myMain: "",
       myStats: "",
+
+      // buttons
+      actionCheck: true,
+      charPieCheck: true,
 
     };
   }
@@ -1000,6 +1095,16 @@ export default class MatchStats extends Component {
     this.setState({
       isOnlyComplete: isOnlyComplete
     })
+  }
+
+  handleCheckChange(e){
+    const target = e.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value    
+    });
   }
 
   searchCode() {
@@ -1097,8 +1202,20 @@ export default class MatchStats extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-md">{createPieChartCharacterUsage(myStats.charUsage, 'Character Usage')}</div>
-              <div className="col-md">{createPieChartCharacterUsage(myStats.oppCharUsage, 'Opponent Character Usage')}</div>
+              <div className="col-md">
+                {createPieChartCharacterUsage(myStats.charUsage, 'Character Usage', this.state.charPieCheck)}
+                <label>
+                  Toggle label:
+                  <input
+                    name="charPieCheck"            
+                    type="checkbox"
+                    checked={this.state.charPieCheck}
+                    onChange={this.handleCheckChange} />
+                </label>
+              </div>
+              <div className="col-md">
+                {createPieChartCharacterUsage(myStats.oppCharUsage, 'Opponent Character Usage', this.state.charPieCheck)}
+              </div>
             </div>
             <div className="row">
               <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.charUsage, myStats.asCharWins, myStats.asCharLoss, 'Character Winrate %')}</div>              
@@ -1245,6 +1362,21 @@ export default class MatchStats extends Component {
                   player={this.state.searchCode}
                 />
               </div>  
+            </div>
+            <div className="row">
+              <div className="col-md" id="bigbar">
+                <label>
+                  Toggle Opponent Data:
+                  <input
+                    name="actionCheck"            
+                    type="checkbox"
+                    checked={this.state.actionCheck}
+                    onChange={this.handleCheckChange} />
+                </label>
+                <ActionsBarChart
+                  dataset = {actionsBarChartData(myStats.charUsage, myStats.actionCountArr, myStats.oppCharUsage, myStats.oppActionCountArr, this.state.actionCheck)}
+                />
+              </div>
             </div>
           </div>
         )

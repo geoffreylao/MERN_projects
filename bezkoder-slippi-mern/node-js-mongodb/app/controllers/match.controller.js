@@ -441,8 +441,11 @@ exports.findAll = (req, res) => {
   let stages = "";
   stages = req.query.stage !== undefined ? req.query.stage : stagearr;
 
-  let complete = req.query.complete
+  let complete = "";
   complete = req.query.complete !== undefined ? req.query.complete : completearr;
+  if(!Array.isArray(complete)){
+    complete = [Boolean(complete)];
+  }
 
   let startdate = req.query.start ? req.query.start : "2001";
 

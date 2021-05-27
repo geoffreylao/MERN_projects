@@ -31,8 +31,8 @@ export default class PieChart extends Component {
               position: 'top'
             },
             legend: {
-              display: false,
-            position: 'bottom',
+              display: this.props.labelBool,
+              position: 'left',
               labels: {
                 boxWidth: 20,
               
