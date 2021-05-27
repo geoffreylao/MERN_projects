@@ -9,7 +9,7 @@ export default class MovesBarChart extends Component {
       let model = elements[0]._model;
       return {
         x: model.x,
-        y: ((model.base + model.y) / 2) - 20
+        y: ((model.base + model.y) / 2)
       };
     };
 
@@ -22,10 +22,19 @@ export default class MovesBarChart extends Component {
                   'Side-B', 'Up-B', 'Down-B', 'Get-up Attack', 'Grab', 'Ledge Get-up Attack'],
           datasets: this.props.dataset,
           }}
-          height={'200%'}
+        height={'250%'}
          options = {{
+           title:{
+             display: true,
+             text: this.props.title,
+             fontSize: 20,
+             position: 'top'
+           },
           legend:{
-            position: 'left'
+            position: 'left',
+            labels: {
+              boxWidth: 13
+            }
           },
           layout:{
             padding: 10
@@ -58,7 +67,7 @@ export default class MovesBarChart extends Component {
             callbacks: {
               label: function(tooltipItem, data) {
                 var dataset = data.datasets[tooltipItem.datasetIndex];
-                return data.labels[tooltipItem.index] + ' ' + dataset.stack + ': ' + dataset.data[tooltipItem.index];
+                return data.labels[tooltipItem.index] + ': ' + dataset.data[tooltipItem.index];
               },
               title: function(tooltipItem, data) {
                 return data.datasets[tooltipItem[0].datasetIndex].label
