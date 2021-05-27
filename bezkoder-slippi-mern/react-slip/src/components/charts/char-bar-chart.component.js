@@ -42,7 +42,7 @@ export default class CharBarChart extends Component {
             layout: {
               padding: {
                 left: 20,
-                right: 140,
+                right: 160,
                 bottom: 40,
                 top: 40
               }

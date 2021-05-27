@@ -221,6 +221,7 @@ function parse_slp(filename, arr){
     }
 
     var myobj = {
+      matchid: new Date(metadata.startAt) + metadata.players[0].names.code + metadata.players[1].names.code,
       settings: {
         isTeams: settings.isTeams,
         isPal: settings.isPAL,
@@ -344,18 +345,21 @@ function parse_folder(folder, res){
       if (err) throw err;
       var dbo = db.db("mongoslp");
 
-      dbo.collection('matches').insertMany(obj_arr, function(err, res, resp = response) {
-        if (err) throw err;
-        console.log("Number of documents inserted: " + res.insertedCount);
-        myinsert = res.insertedCount;
-
-        db.close();
-
-        obj_arr = [];
-        failed_inserts = [];
-        count = 0;
-
-        resp.send({ inserted: myinsert, failed_arr: myfailed_arr });
+      dbo.collection('matches').insertMany(obj_arr, {ordered: false} , function(err, res, resp = response) {
+        if (err) {
+           console.log("error")
+        }else{
+          console.log("Number of documents inserted: " + res.insertedCount);
+          myinsert = res.insertedCount;
+  
+          db.close();
+  
+          obj_arr = [];
+          failed_inserts = [];
+          count = 0;
+  
+          resp.send({ inserted: myinsert, failed_arr: myfailed_arr });
+        }
       }); // dbo.collection
     }); // MongoClient.connect
   } // else

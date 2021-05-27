@@ -41,7 +41,7 @@ export default class StageBarChart extends Component {
           options={{            
             layout: {
               padding: {
-                right: 140,
+                right: 180,
                 left: 120,
                 top: 50,
                 bottom: 50

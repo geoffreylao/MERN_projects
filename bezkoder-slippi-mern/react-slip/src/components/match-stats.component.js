@@ -14,6 +14,7 @@ import StageBarChart from './charts/stage-bar-chart.component';
 import VerticalBarChart from './charts/vertical-bar-chart.component';
 import ActionsBarChart from './charts/action-bar-chart.component';
 import MovesBarChart from './charts/moves-bar-chart.component';
+import TimeLineChart from './charts/time-line-chart.component';
 
 var charDict =
  {
@@ -325,14 +326,10 @@ function getStats(connect_code, res){
   myDigitalIPM,myOppDigitalIPM,myActionCountArr,myOppActionCountArr,
   myMoveUsageArr,myOppMoveUsageArr
 
-  var myTeamsCharUsage, myTeamsOthersCharUsage, myTeamsTotalMatches = 0 
 
   // Character Usage
   myCharUsage = new Array(26).fill(0);
   myOppCharUsage = new Array(26).fill(0);
-
-  myTeamsCharUsage = new Array(26).fill(0);
-  myTeamsOthersCharUsage = new Array(26).fill(0);
 
   // Character Wins
   myVsCharWins = new Array(26).fill(0);
@@ -364,8 +361,13 @@ function getStats(connect_code, res){
     killMoves : Array.from({length: 26}, e => Array(63).fill(0))
   }
 
-  // Total Matches
+  var oppTally = {}
 
+  var shortestGametime = 28800;
+  var longestGametime = 0;
+
+  var quitoutmyCharUsage = new Array(26).fill(0);
+  var quitoutmyOppCharUsage = new Array(26).fill(0);
   
   var frames = 0;
 
@@ -386,6 +388,21 @@ function getStats(connect_code, res){
       // Total L R A Start
       if(res[i].metadata.gameComplete === false){
         myTotalLRAStart++;
+        for (let j = 0; j < res[i].players.length; j++) {
+          if(res[i].players[j].code === connect_code){
+            quitoutmyCharUsage[res[i].players[j].characterId]++;
+          }else{
+            quitoutmyOppCharUsage[res[i].players[j].characterId]++;
+          }
+        }
+      }else{
+        if(res[i].metadata.lastFrame > longestGametime){
+          longestGametime = res[i].metadata.lastFrame
+        }
+  
+        if(res[i].metadata.lastFrame < shortestGametime){
+          shortestGametime = res[i].metadata.lastFrame
+        }
       }
   
       // Total Timeouts
@@ -500,6 +517,14 @@ function getStats(connect_code, res){
           myActionCountArr[res[i].players[j].characterId][6] +=  res[i].players[j].actionCounts.rollCount;
   
         }else{
+          let current = res[i].players[j].code;
+
+          if(oppTally[current]){
+            oppTally[current]++
+          }else{
+            oppTally[current] = 1;
+          }
+
           myOppCharUsage[res[i].players[j].characterId]++;
           myOppNeutralWins += res[i].players[j].neutralWins;
           myOppCounterHits += res[i].players[j].counterHits;
@@ -567,16 +592,8 @@ function getStats(connect_code, res){
       }
     }
     else{
-      myTeamsTotalMatches++;
-
-      for (let j = 0; j < res[i].players.length; j++) {
-        if(res[i].players[j].code === connect_code){
-          myTeamsCharUsage[res[i].settings.players[j].characterId]++;
-        }else{
-          myTeamsOthersCharUsage[res[i].settings.players[j].characterId]++;
-        }
-      }
-    }   
+ 
+    }
   }
   // Total Time
   myTotalTime = displayTime(frames);
@@ -621,6 +638,104 @@ function getStats(connect_code, res){
 
   myDigitalIPM = myTotalDigitalInputs / myTotalMinutes;
   myOppDigitalIPM = myOppTotalDigitalInputs / myTotalMinutes;
+
+  // Rival 
+  var items = Object.keys(oppTally).map(function(key) {
+    return [key, oppTally[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var rivalCharUsage = new Array(26).fill(0);
+
+  for (let i = 0; i < res.length; i++) {
+    for (let j = 0; j < res[i].players.length; j++) {
+      if(res[i].players[j].code === items[0][0]){
+        rivalCharUsage[res[i].players[j].characterId]++;
+      }
+    }
+  }
+
+  var rivalsCharId = rivalCharUsage.indexOf(Math.max(...rivalCharUsage));
+
+  var colorArr = new Array(6).fill(0);
+
+  for (let i = 0; i < res.length; i++) {
+    for (let j = 0; j < res[i].players.length; j++) {
+      if(res[i].players[j].code === items[0][0] && res[i].players[j].characterId === rivalsCharId){
+        colorArr[res[i].players[j].characterColor]++; 
+      }
+    }
+  }
+
+  var rivalsColorId = colorArr.indexOf(Math.max(...colorArr));
+
+  var vsRivalWin = 0;
+  var vsRivalLoss = 0;
+
+  for (let i = 0; i < res.length; i++) {
+      if(res[i].players[0].code === items[0][0] || res[i].players[0].code === connect_code){
+        if(res[i].players[1].code === items[0][0] || res[i].players[1].code === connect_code){
+          if(res[i].metadata.winner === connect_code){
+            vsRivalWin++;
+          }else if(res[i].metadata.winner === items[0][0]){
+            vsRivalLoss++;
+          }
+        }
+      }
+    }
+  
+
+  // Match durations
+  var timerange = longestGametime - shortestGametime;
+  var range = Math.ceil(timerange / 10);
+
+  const _ = require("lodash");            
+    
+  // Using the _.range() method 
+  let range_arr = _.range(shortestGametime, longestGametime, range); 
+
+  range_arr.push(range_arr[range_arr.length - 1]+range)
+
+  function between(x, min, max) {
+    return x >= min && x <= max;
+  }
+
+  var winrange = new Array(10).fill(0);
+
+  var lossrange = new Array(10).fill(0);
+
+  for (let i = 0; i < res.length; i++) {
+    if(res[i].metadata.winner === connect_code){
+      for (let j = 0; j < winrange.length; j++) {
+        if(between(res[i].metadata.lastFrame, range_arr[j], range_arr[j+1])){
+          winrange[j]++
+        }        
+      }
+    }else if(res[i].metadata.winner !== connect_code && res[i].metadata.winner !== 'INCOMPLETE' && res[i].metadata.winner !== 'DRAW'){
+      for (let j = 0; j < lossrange.length; j++) {
+        if(between(res[i].metadata.lastFrame, range_arr[j], range_arr[j+1])){
+          lossrange[j]++
+        }        
+      }
+    }
+  }
+
+  var rangewinrate = []
+  
+  for (let i = 0; i < winrange.length; i++) {
+    rangewinrate[i] = (winrange[i] / (winrange[i] + lossrange[i])) * 100;
+  }
+
+  var oneAndDone = 0
+
+  for (let i = 0; i < items.length; i++) {
+    if(items[i][1] === 1){
+      oneAndDone++;
+    }
+  }
 
   var resObj = {
     // Summary
@@ -723,12 +838,29 @@ function getStats(connect_code, res){
     oppMoveUsageArr : myOppMoveUsageArr,
 
     // Teams
-    teamsTotalMatches : myTeamsTotalMatches,
-    teamsCharUsage : myTeamsCharUsage,
-    teamsOtherCharUsage : myTeamsOthersCharUsage
+    rival : items[0][0],
+    rivalCharUsage: rivalCharUsage,
+    rivalsCharId: rivalsCharId,
+    rivalsColorId: rivalsColorId,
+    vsRivalWin: vsRivalWin,
+    vsRivalLoss: vsRivalLoss,
+
+    // Match duration
+    shortestGametime: shortestGametime,
+    longestGametime: longestGametime,
+
+    timeRanges: range_arr,
+    timeRangeWinrate: rangewinrate,
+
+    // Quit outs
+    quitoutChars: quitoutmyCharUsage,
+    oppQuitoutChars: quitoutmyOppCharUsage,
+
+    // opponents
+    uniqueOpps: items.length,
+    oneAndDoned: oneAndDone
   }
 
-  //console.log(resObj);
   return resObj
 }
 
@@ -746,8 +878,6 @@ function createPieChartCharacterUsage(charUsage, title, labelBool){
   items.sort(function(first, second) {
     return second[1] - first[1];
   });
-
-  console.log(items)
 
   var charLabels = [];
   var charData = [];
@@ -778,8 +908,6 @@ function createPieChartCharacterUsage(charUsage, title, labelBool){
       charhoverColor.push(charhoverColorDict[items[j][0]]);
     }    
   }
-
-  console.log(charImage)
 
   return <PieChart 
             charData = {charData}
@@ -812,8 +940,6 @@ function createBarChartCharacterWinrate(myDict, charUsage, charWins, charLoss, t
   items.sort(function(first, second) {
     return second[1] - first[1];
   });
-
-  console.log(items)
 
   var charLabels = [];
   var charData = [];
@@ -875,8 +1001,6 @@ function createBarChartStageWinrate(myDict, stageWins, stageLoss, title){
   items.sort(function(first, second) {
     return second[1] - first[1];
   });
-
-  console.log(items)
 
   var stageLabels = [];
   var stageData = [];
@@ -961,14 +1085,14 @@ function actionsBarChartData(charUsage, actionArr, oppCharUsage, oppActionArr, c
       )
     }  
   }
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < oppitems.length; i++) {
     if(oppitems[i][1] !== 0){
       orderedActionsArr.push(
         {
-          label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
-          data: oppActionArr[items[i][0]],
-          backgroundColor: charbackgroundColorDict[items[i][0]],
-          borderColor: charborderColorDict[items[i][0]],
+          label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
+          data: oppActionArr[oppitems[i][0]],
+          backgroundColor: charbackgroundColorDict[oppitems[i][0]],
+          borderColor: charborderColorDict[oppitems[i][0]],
           borderWidth: 1,
           stack: 'opponent',
           hidden: !checked
@@ -1044,7 +1168,7 @@ function movesBarChartData(
       if(oppitems[i][1] !== 0){
         movesArr.push(
           {
-            label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
+            label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
             data: [
               oppNeutralArr[oppitems[i][0]][2]+oppNeutralArr[oppitems[i][0]][3]+oppNeutralArr[oppitems[i][0]][4]+oppNeutralArr[oppitems[i][0]][5],
               oppNeutralArr[oppitems[i][0]][6],oppNeutralArr[oppitems[i][0]][7],oppNeutralArr[oppitems[i][0]][8],oppNeutralArr[oppitems[i][0]][9],
@@ -1055,8 +1179,8 @@ function movesBarChartData(
               oppNeutralArr[oppitems[i][0]][52]+oppNeutralArr[oppitems[i][0]][53]+oppNeutralArr[oppitems[i][0]][54]+oppNeutralArr[oppitems[i][0]][55]+oppNeutralArr[oppitems[i][0]][56],
               oppNeutralArr[oppitems[i][0]][61]+oppNeutralArr[oppitems[i][0]][62]
             ],
-            backgroundColor: charbackgroundColorDict[items[i][0]],
-            borderColor: charborderColorDict[items[i][0]],
+            backgroundColor: charbackgroundColorDict[oppitems[i][0]],
+            borderColor: charborderColorDict[oppitems[i][0]],
             borderWidth: 1,
             stack: 'opponent',
             hidden: !checked
@@ -1090,23 +1214,23 @@ function movesBarChartData(
         )
       }
     }
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
         movesArr.push(
           {
-            label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
+            label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
             data: [
-              oppCounterArr[items[i][0]][2]+oppCounterArr[items[i][0]][3]+oppCounterArr[items[i][0]][4]+oppCounterArr[items[i][0]][5],
-              oppCounterArr[items[i][0]][6],oppCounterArr[items[i][0]][7],oppCounterArr[items[i][0]][8],oppCounterArr[items[i][0]][9],
-              oppCounterArr[items[i][0]][10],oppCounterArr[items[i][0]][11],oppCounterArr[items[i][0]][12],oppCounterArr[items[i][0]][13],
-              oppCounterArr[items[i][0]][14],oppCounterArr[items[i][0]][15],oppCounterArr[items[i][0]][16],oppCounterArr[items[i][0]][17],
-              oppCounterArr[items[i][0]][18],oppCounterArr[items[i][0]][19],oppCounterArr[items[i][0]][20],oppCounterArr[items[i][0]][21],
-              oppCounterArr[items[i][0]][50]+oppCounterArr[items[i][0]][51],
-              oppCounterArr[items[i][0]][52]+oppCounterArr[items[i][0]][53]+oppCounterArr[items[i][0]][54]+oppCounterArr[items[i][0]][55]+oppCounterArr[items[i][0]][56],
-              oppCounterArr[items[i][0]][61]+oppCounterArr[items[i][0]][62]
+              oppCounterArr[oppitems[i][0]][2]+oppCounterArr[oppitems[i][0]][3]+oppCounterArr[oppitems[i][0]][4]+oppCounterArr[oppitems[i][0]][5],
+              oppCounterArr[oppitems[i][0]][6],oppCounterArr[oppitems[i][0]][7],oppCounterArr[oppitems[i][0]][8],oppCounterArr[oppitems[i][0]][9],
+              oppCounterArr[oppitems[i][0]][10],oppCounterArr[oppitems[i][0]][11],oppCounterArr[oppitems[i][0]][12],oppCounterArr[oppitems[i][0]][13],
+              oppCounterArr[oppitems[i][0]][14],oppCounterArr[oppitems[i][0]][15],oppCounterArr[oppitems[i][0]][16],oppCounterArr[oppitems[i][0]][17],
+              oppCounterArr[oppitems[i][0]][18],oppCounterArr[oppitems[i][0]][19],oppCounterArr[oppitems[i][0]][20],oppCounterArr[oppitems[i][0]][21],
+              oppCounterArr[oppitems[i][0]][50]+oppCounterArr[oppitems[i][0]][51],
+              oppCounterArr[oppitems[i][0]][52]+oppCounterArr[oppitems[i][0]][53]+oppCounterArr[oppitems[i][0]][54]+oppCounterArr[oppitems[i][0]][55]+oppCounterArr[oppitems[i][0]][56],
+              oppCounterArr[oppitems[i][0]][61]+oppCounterArr[oppitems[i][0]][62]
             ],
-            backgroundColor: charbackgroundColorDict[items[i][0]],
-            borderColor: charborderColorDict[items[i][0]],
+            backgroundColor: charbackgroundColorDict[oppitems[i][0]],
+            borderColor: charborderColorDict[oppitems[i][0]],
             borderWidth: 1,
             stack: 'opponent',
             hidden: !checked
@@ -1140,23 +1264,23 @@ function movesBarChartData(
         )
       }
     }
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
-        movesArr.push(
-          {
-            label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
-            data: [
-              oppTradeArr[items[i][0]][2]+oppTradeArr[items[i][0]][3]+oppTradeArr[items[i][0]][4]+oppTradeArr[items[i][0]][5],
-              oppTradeArr[items[i][0]][6],oppTradeArr[items[i][0]][7],oppTradeArr[items[i][0]][8],oppTradeArr[items[i][0]][9],
-              oppTradeArr[items[i][0]][10],oppTradeArr[items[i][0]][11],oppTradeArr[items[i][0]][12],oppTradeArr[items[i][0]][13],
-              oppTradeArr[items[i][0]][14],oppTradeArr[items[i][0]][15],oppTradeArr[items[i][0]][16],oppTradeArr[items[i][0]][17],
-              oppTradeArr[items[i][0]][18],oppTradeArr[items[i][0]][19],oppTradeArr[items[i][0]][20],oppTradeArr[items[i][0]][21],
-              oppTradeArr[items[i][0]][50]+oppTradeArr[items[i][0]][51],
-              oppTradeArr[items[i][0]][52]+oppTradeArr[items[i][0]][53]+oppTradeArr[items[i][0]][54]+oppTradeArr[items[i][0]][55]+oppTradeArr[items[i][0]][56],
-              oppTradeArr[items[i][0]][61]+oppTradeArr[items[i][0]][62]
-            ],
-            backgroundColor: charbackgroundColorDict[items[i][0]],
-            borderColor: charborderColorDict[items[i][0]],
+          movesArr.push(
+            {
+              label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
+              data: [
+                oppTradeArr[oppitems[i][0]][2]+oppTradeArr[oppitems[i][0]][3]+oppTradeArr[oppitems[i][0]][4]+oppTradeArr[oppitems[i][0]][5],
+                oppTradeArr[oppitems[i][0]][6],oppTradeArr[oppitems[i][0]][7],oppTradeArr[oppitems[i][0]][8],oppTradeArr[oppitems[i][0]][9],
+                oppTradeArr[oppitems[i][0]][10],oppTradeArr[oppitems[i][0]][11],oppTradeArr[oppitems[i][0]][12],oppTradeArr[oppitems[i][0]][13],
+                oppTradeArr[oppitems[i][0]][14],oppTradeArr[oppitems[i][0]][15],oppTradeArr[oppitems[i][0]][16],oppTradeArr[oppitems[i][0]][17],
+                oppTradeArr[oppitems[i][0]][18],oppTradeArr[oppitems[i][0]][19],oppTradeArr[oppitems[i][0]][20],oppTradeArr[oppitems[i][0]][21],
+                oppTradeArr[oppitems[i][0]][50]+oppTradeArr[oppitems[i][0]][51],
+                oppTradeArr[oppitems[i][0]][52]+oppTradeArr[oppitems[i][0]][53]+oppTradeArr[oppitems[i][0]][54]+oppTradeArr[oppitems[i][0]][55]+oppTradeArr[oppitems[i][0]][56],
+                oppTradeArr[oppitems[i][0]][61]+oppTradeArr[oppitems[i][0]][62]
+              ],
+              backgroundColor: charbackgroundColorDict[oppitems[i][0]],
+              borderColor: charborderColorDict[oppitems[i][0]],
             borderWidth: 1,
             stack: 'opponent',
             hidden: !checked
@@ -1190,23 +1314,23 @@ function movesBarChartData(
         )
       }
     }
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
         movesArr.push(
           {
-            label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
+            label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
             data: [
-              oppKillsArr[items[i][0]][2]+oppKillsArr[items[i][0]][3]+oppKillsArr[items[i][0]][4]+oppKillsArr[items[i][0]][5],
-              oppKillsArr[items[i][0]][6],oppKillsArr[items[i][0]][7],oppKillsArr[items[i][0]][8],oppKillsArr[items[i][0]][9],
-              oppKillsArr[items[i][0]][10],oppKillsArr[items[i][0]][11],oppKillsArr[items[i][0]][12],oppKillsArr[items[i][0]][13],
-              oppKillsArr[items[i][0]][14],oppKillsArr[items[i][0]][15],oppKillsArr[items[i][0]][16],oppKillsArr[items[i][0]][17],
-              oppKillsArr[items[i][0]][18],oppKillsArr[items[i][0]][19],oppKillsArr[items[i][0]][20],oppKillsArr[items[i][0]][21],
-              oppKillsArr[items[i][0]][50]+oppKillsArr[items[i][0]][51],
-              oppKillsArr[items[i][0]][52]+oppKillsArr[items[i][0]][53]+oppKillsArr[items[i][0]][54]+oppKillsArr[items[i][0]][55]+oppKillsArr[items[i][0]][56],
-              oppKillsArr[items[i][0]][61]+oppKillsArr[items[i][0]][62]
+              oppKillsArr[oppitems[i][0]][2]+oppKillsArr[oppitems[i][0]][3]+oppKillsArr[oppitems[i][0]][4]+oppKillsArr[oppitems[i][0]][5],
+              oppKillsArr[oppitems[i][0]][6],oppKillsArr[oppitems[i][0]][7],oppKillsArr[oppitems[i][0]][8],oppKillsArr[oppitems[i][0]][9],
+              oppKillsArr[oppitems[i][0]][10],oppKillsArr[oppitems[i][0]][11],oppKillsArr[oppitems[i][0]][12],oppKillsArr[oppitems[i][0]][13],
+              oppKillsArr[oppitems[i][0]][14],oppKillsArr[oppitems[i][0]][15],oppKillsArr[oppitems[i][0]][16],oppKillsArr[oppitems[i][0]][17],
+              oppKillsArr[oppitems[i][0]][18],oppKillsArr[oppitems[i][0]][19],oppKillsArr[oppitems[i][0]][20],oppKillsArr[oppitems[i][0]][21],
+              oppKillsArr[oppitems[i][0]][50]+oppKillsArr[oppitems[i][0]][51],
+              oppKillsArr[oppitems[i][0]][52]+oppKillsArr[oppitems[i][0]][53]+oppKillsArr[oppitems[i][0]][54]+oppKillsArr[oppitems[i][0]][55]+oppKillsArr[oppitems[i][0]][56],
+              oppKillsArr[oppitems[i][0]][61]+oppKillsArr[oppitems[i][0]][62]
             ],
-            backgroundColor: charbackgroundColorDict[items[i][0]],
-            borderColor: charborderColorDict[items[i][0]],
+            backgroundColor: charbackgroundColorDict[oppitems[i][0]],
+            borderColor: charborderColorDict[oppitems[i][0]],
             borderWidth: 1,
             stack: 'opponent',
             hidden: !checked
@@ -1215,8 +1339,6 @@ function movesBarChartData(
       }
     }   
   }
-
-  console.log(movesArr);
   return movesArr;
 
 }
@@ -1430,7 +1552,10 @@ export default class MatchStats extends Component {
                   {myStats.totalMatches} games <br/>
                   {myStats.totalTime} time played <br/>
                   {myStats.totalLRAStart} L+R+A+Starts <br/>
-                  {myStats.totalTimeouts} Timeouts 
+                  {myStats.totalTimeouts} Timeouts <br/>
+
+                  {myStats.uniqueOpps} Unique Opponents <br/>
+                  {myStats.oneAndDoned} One And Doned <br/>
                 </p>
               </div>
               {/* WinRate Donut Chart */}
@@ -1464,7 +1589,7 @@ export default class MatchStats extends Component {
               <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.charUsage, myStats.asCharWins, myStats.asCharLoss, 'Character Winrate %')}</div>              
             </div>
             <div className="row">
-              <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.oppCharUsage, myStats.vsCharWins, myStats.vsCharLoss, 'Opponent Character Winrate %')}</div>
+              <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.oppCharUsage, myStats.vsCharWins, myStats.vsCharLoss, 'VS Character Winrate %')}</div>
             </div>
             <div className="row">
               <div className="col-md" id="bigbar">{createBarChartStageWinrate(stageDict, myStats.stageWins, myStats.stageLoss, 'Stage Winrate %')}</div>
@@ -1648,6 +1773,52 @@ export default class MatchStats extends Component {
                 />
               </div>
             </div>
+            <div className="row">
+              <div className="col-sm"> 
+                <div id="container2">
+                  {console.log(myStats.rivalCharId)}
+                  <img src="cssp2bg.png" width="272" height="376" alt=""/>
+                  <img src={`char_portraits/${myStats.rivalsCharId}/${myStats.rivalsColorId}.png`} width="272" height="376" alt=""/>
+                  <img src="cssp2.png" width="272" height="376" alt=""/>
+                  <p id="text">
+                    {myStats.rival}
+                  </p>
+                </div>
+              </div>
+              <div className="col-sm-6">
+                <Donut
+                  labels={[myStats.vsRivalLoss + ' Loss', myStats.vsRivalWin + ' Wins']}
+                  data={[myStats.vsRivalLoss, myStats.vsRivalWin]}
+                  title='Winrate'
+                  percentage = {parseInt((myStats.vsRivalWin/(myStats.vsRivalLoss + myStats.vsRivalWin)) * 100)}
+                  player={myStats.rival}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md" id="bigbar">
+                <TimeLineChart 
+                  data={myStats.timeRangeWinrate}
+                  rangearr={myStats.timeRanges} 
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createPieChartCharacterUsage(myStats.quitoutChars, 'Character Usage on LRA+Start', this.state.charPieCheck)}
+                <label>
+                  Toggle label:
+                  <input
+                    name="charPieCheck"            
+                    type="checkbox"
+                    checked={this.state.charPieCheck}
+                    onChange={this.handleCheckChange} />
+                </label>
+              </div>
+              <div className="col-md">
+                {createPieChartCharacterUsage(myStats.oppQuitoutChars, 'Opponent Character Usage on LRA+Start', this.state.charPieCheck)}
+              </div>
+            </div>
           </div>
         )
       }
@@ -1737,14 +1908,6 @@ export default class MatchStats extends Component {
             </div>
         </div>
         <div className="col-md-12">
-        {/* <div id="container">
-                <img src="cssp1bg.png" width="272" height="376" alt=""/>
-                <img src={`char_portraits/${myMain[0]}/${myMain[1]}.png`} width="272" height="376" alt=""/>
-                <img src="cssp1.png" width="272" height="376" alt=""/>
-                <p id="text">
-                  GEFF#353
-                </p>
-            </div> */}
           {renderStats()}
         </div>
       </div>

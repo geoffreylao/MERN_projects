@@ -64,6 +64,16 @@ h3 {
 
 }
 
+#container2 img {
+  border-style: solid;
+  border-color: #000097;
+  position: absolute;
+  top: 0;
+  left: 0;
+  scale: 100%;
+
+}
+
 #text {
   z-index: 100;
   position: absolute;
