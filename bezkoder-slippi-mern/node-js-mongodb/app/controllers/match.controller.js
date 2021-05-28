@@ -335,19 +335,25 @@ function parse_folder(folder, res){
   console.log("Failed inserts: " + myfailed_arr.length);
   myfailed = (count -  myfailed_arr.length);
 
+  res.json({inserted: obj_arr.length , failed_arr: myfailed_arr})
+
   if (obj_arr.length === 0) {
     console.log("Nothing to insert!")
-    res.json({failed_arr: myfailed_arr})
+    
 
     failed_inserts = [];
   }else{
-    MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true } , function(err,db, response = res) {
+    MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true } , function(err,db) {
       if (err) throw err;
       var dbo = db.db("mongoslp");
 
-      dbo.collection('matches').insertMany(obj_arr, {ordered: false} , function(err, res, resp = response) {
-        if (err) {
-           console.log("error")
+      dbo.collection('matches').insertMany(obj_arr, {ordered: false} , function(err, res) {
+        if (err){
+          console.log("error")
+
+          obj_arr = [];
+          failed_inserts = [];
+          count = 0;
         }else{
           console.log("Number of documents inserted: " + res.insertedCount);
           myinsert = res.insertedCount;
@@ -357,12 +363,13 @@ function parse_folder(folder, res){
           obj_arr = [];
           failed_inserts = [];
           count = 0;
-  
-          resp.send({ inserted: myinsert, failed_arr: myfailed_arr });
+
         }
       }); // dbo.collection
     }); // MongoClient.connect
   } // else
+
+
 }// parse_folder
 
 const slippiFilter = function(req, file, cb) {

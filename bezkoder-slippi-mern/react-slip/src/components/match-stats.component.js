@@ -15,6 +15,7 @@ import VerticalBarChart from './charts/vertical-bar-chart.component';
 import ActionsBarChart from './charts/action-bar-chart.component';
 import MovesBarChart from './charts/moves-bar-chart.component';
 import TimeLineChart from './charts/time-line-chart.component';
+import QuitoutPieChart from './charts/quitout-pie-chart.component';
 
 var charDict =
  {
@@ -737,6 +738,14 @@ function getStats(connect_code, res){
     }
   }
 
+  var quitoutmyCharUsagePercent = new Array(26).fill(0);
+  var quitoutmyOppCharUsagePercent = new Array(26).fill(0);
+
+  for (let i = 0; i < quitoutmyCharUsage.length; i++) {
+    quitoutmyCharUsagePercent[i] = quitoutmyCharUsage[i] / myCharUsage[i] ? parseInt((quitoutmyCharUsage[i] / myCharUsage[i])*100) : 0;
+    quitoutmyOppCharUsagePercent[i] = quitoutmyOppCharUsage[i] / myOppCharUsage[i] ? parseInt((quitoutmyOppCharUsage[i] / myOppCharUsage[i]) * 100) : 0;
+  }
+
   var resObj = {
     // Summary
     totalMatches: myTotalMatches,
@@ -855,6 +864,8 @@ function getStats(connect_code, res){
     // Quit outs
     quitoutChars: quitoutmyCharUsage,
     oppQuitoutChars: quitoutmyOppCharUsage,
+    quitoutPercent: quitoutmyCharUsagePercent,
+    quitoutOppPercent: quitoutmyOppCharUsagePercent,
 
     // opponents
     uniqueOpps: items.length,
@@ -910,6 +921,64 @@ function createPieChartCharacterUsage(charUsage, title, labelBool){
   }
 
   return <PieChart 
+            charData = {charData}
+            charLabels = {charLabels}
+            charImage = {charImage}
+            charbackgroundColor = {charbackgroundColor}
+            charborderColor = {charborderColor}
+            charhoverBackgroundColor = {charhoverColor}
+            title = {title}
+            labelBool = {labelBool}
+/>
+
+}
+
+function createQuitoutPieChartCharacterUsage(charUsage, title, labelBool){
+  var dict = {}
+
+  for (let i = 0; i < charUsage.length; i++) {        
+    dict[i] = charUsage[i];
+  }
+
+  var items = Object.keys(dict).map(function(key) {
+    return [key, dict[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var charLabels = [];
+  var charData = [];
+  var charImage = [];
+  var charbackgroundColor = [];
+  var charborderColor = [];
+  var charhoverColor = [];
+  var sum = charUsage.reduce(function(a, b){
+    return a + b;
+  }, 0);
+
+  for (let j = 0; j < items.length; j++) {
+    if((items[j][1]) !== 0){
+      charLabels.push((charDict[items[j][0]]).replace(".png", ""));
+      charData.push(items[j][1]);
+
+      if(items[j][1]/sum > 0.060) {
+        charImage.push({
+          src: '/stock_icons/' + charDict[items[j][0]],
+          width: 32,
+          height: 32,
+        });
+      }
+
+
+      charbackgroundColor.push(charbackgroundColorDict[items[j][0]]);
+      charborderColor.push(charborderColorDict[items[j][0]]);
+      charhoverColor.push(charhoverColorDict[items[j][0]]);
+    }    
+  }
+
+  return <QuitoutPieChart 
             charData = {charData}
             charLabels = {charLabels}
             charImage = {charImage}
@@ -1805,7 +1874,7 @@ export default class MatchStats extends Component {
             </div>
             <div className="row">
               <div className="col-md">
-                {createPieChartCharacterUsage(myStats.quitoutChars, 'Character Usage on LRA+Start', this.state.charPieCheck)}
+                {createQuitoutPieChartCharacterUsage(myStats.quitoutPercent, 'Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
                 <label>
                   Toggle label:
                   <input
@@ -1816,7 +1885,7 @@ export default class MatchStats extends Component {
                 </label>
               </div>
               <div className="col-md">
-                {createPieChartCharacterUsage(myStats.oppQuitoutChars, 'Opponent Character Usage on LRA+Start', this.state.charPieCheck)}
+                {createQuitoutPieChartCharacterUsage(myStats.quitoutOppPercent, 'Opponent Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
               </div>
             </div>
           </div>
