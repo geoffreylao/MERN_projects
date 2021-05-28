@@ -15,6 +15,8 @@ const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
 const DIR = path.resolve(__dirname, '../public/');
 
+// Zip function import
+var AdmZip = require("adm-zip");
 
 
 // Variables for parse_folder function
@@ -325,8 +327,6 @@ function parse_folder(folder, res){
     count++;
   });
 
-  var myinsert = 0;
-  var myfailed = 0;
   var myfailed_arr = [];
 
   console.log(failed_inserts);
@@ -339,7 +339,6 @@ function parse_folder(folder, res){
 
   if (obj_arr.length === 0) {
     console.log("Nothing to insert!")
-    
 
     failed_inserts = [];
   }else{
@@ -374,7 +373,7 @@ function parse_folder(folder, res){
 
 const slippiFilter = function(req, file, cb) {
   // Accept images only
-  if (!file.originalname.match(/\.(slp|SLP)$/)) {
+  if (!file.originalname.match(/\.(slp|SLP|zip)$/)) {
       req.fileValidationError = 'Only slippi files are allowed!';
       return cb(new Error('Only slippi files are allowed!'), false);
   }
@@ -402,6 +401,22 @@ exports.create = (req, res) => {
   upload(req, res, function(err) {
     if (req.fileValidationError) {
         return res.send(req.fileValidationError);
+    }
+    for (let i = 0; i < req.files.length; i++) {
+      if(req.files[i].mimetype === 'application/x-zip-compressed'){
+        var zip = new AdmZip(req.files[i].path);
+
+        zip.extractAllTo(R_DIR);
+
+        try {
+          fs.unlinkSync(req.files[i].path)
+          //file removed
+        } catch(err) {
+          console.error(err)
+        }
+        
+      }
+      
     }
     //To parse PUBLIC folder and empty it
     parse_folder(R_DIR, res); 

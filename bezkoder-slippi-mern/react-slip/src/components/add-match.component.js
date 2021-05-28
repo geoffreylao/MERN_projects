@@ -61,9 +61,9 @@ export default class AddMatch extends Component {
     return (
         <div className="container">
             <div className="row">
-              <form onSubmit={this.onSubmit}>
+              <form onSubmit={this.onSubmit} enctype="multipart/form-data">
                 <div className="form-group">
-                    <input type="file" accept=".slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />
+                    <input type="file" accept="application/x-zip-compressed,.slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary" type="submit">Upload</button>
