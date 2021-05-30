@@ -3,7 +3,7 @@ const db = require("../models");
 const Match = db.matches;
 
 // .slp parsing function imports
-const { default: SlippiGame } = require('@slippi/slippi-js');
+const { SlippiGame } = require('@slippi/slippi-js');
 const fs = require('fs');
 const uri = db.url;
 var MongoClient = require('mongodb').MongoClient;
@@ -254,7 +254,7 @@ function parse_slp(filename, arr){
             ledgegrabCount: stats.actionCounts[0].ledgegrabCount,
             rollCount: stats.actionCounts[0].rollCount
           },
-          conversions: p0_conversions,
+          conversions: p1_conversions,
           inputCounts: {
             buttons: stats.overall[0].inputCounts.buttons, // digital inputs
             triggers: stats.overall[0].inputCounts.triggers,
@@ -272,6 +272,7 @@ function parse_slp(filename, arr){
           trades: stats.overall[0].beneficialTradeRatio.count,
           deathCount: stats.overall[1].killCount,
           lcancelPercent: l_cancel_percentage(0),
+          grabCount: stats.actionCounts[0].grabCount,
           stocks: p0_stocks
         },
         {
@@ -289,7 +290,7 @@ function parse_slp(filename, arr){
             ledgegrabCount: stats.actionCounts[1].ledgegrabCount,
             rollCount: stats.actionCounts[1].rollCount
           },
-          conversions: p1_conversions,
+          conversions: p0_conversions,
           inputCounts: {
             buttons: stats.overall[1].inputCounts.buttons, // digital inputs
             triggers: stats.overall[1].inputCounts.triggers,

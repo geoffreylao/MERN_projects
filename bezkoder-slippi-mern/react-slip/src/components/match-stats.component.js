@@ -485,7 +485,9 @@ function getStats(connect_code, res){
 
               if(res[i].players[j].conversions[k].endPercent > myHighestKill){
                 myHighestKill = res[i].players[j].conversions[k].endPercent;
-              }else if(res[i].players[j].conversions[k].endPercent < myLowestKill){
+              } 
+              
+              if(res[i].players[j].conversions[k].endPercent < myLowestKill){
                 myLowestKill = res[i].players[j].conversions[k].endPercent;
               }
             }
@@ -555,9 +557,11 @@ function getStats(connect_code, res){
             if(res[i].players[j].conversions[k].didKill){
               if(res[i].players[j].conversions[k].moves[0])
               {myOppMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
-              if(res[i].players[j].conversions[k].endPercent > myHighestKill){
+              if(res[i].players[j].conversions[k].endPercent > myOppHighestKill){
                 myOppHighestKill = res[i].players[j].conversions[k].endPercent;
-              }else if(res[i].players[j].conversions[k].endPercent < myLowestKill){
+              }
+              
+              if(res[i].players[j].conversions[k].endPercent < myOppLowestKill){
                 myOppLowestKill = res[i].players[j].conversions[k].endPercent;
               }
             }
@@ -690,6 +694,10 @@ function getStats(connect_code, res){
   
 
   // Match durations
+  if(longestGametime === shortestGametime){
+    shortestGametime = 0;
+  }
+
   var timerange = longestGametime - shortestGametime;
   var range = Math.ceil(timerange / 10);
 
