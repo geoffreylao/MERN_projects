@@ -1388,10 +1388,12 @@ function movesBarChartData(
   });
 
   var movesArr = []
+  var downb;
 
   if(radio === 'Neutral Wins'){
     for (let i = 0; i < items.length; i++) {
       if(items[i][1] !== 0){
+        downb = items[i][0] === "12" ? neutralArr[items[i][0]][21] +neutralArr[items[i][0]][1] : neutralArr[items[i][0]][21]
         movesArr.push(
           {
             label: (charDict[items[i][0]]).replace(".png", ""),
@@ -1400,7 +1402,7 @@ function movesBarChartData(
               neutralArr[items[i][0]][6],neutralArr[items[i][0]][7],neutralArr[items[i][0]][8],neutralArr[items[i][0]][9],
               neutralArr[items[i][0]][10],neutralArr[items[i][0]][11],neutralArr[items[i][0]][12],neutralArr[items[i][0]][13],
               neutralArr[items[i][0]][14],neutralArr[items[i][0]][15],neutralArr[items[i][0]][16],neutralArr[items[i][0]][17],
-              neutralArr[items[i][0]][18],neutralArr[items[i][0]][19],neutralArr[items[i][0]][20],neutralArr[items[i][0]][21],
+              neutralArr[items[i][0]][18],neutralArr[items[i][0]][19],neutralArr[items[i][0]][20],downb,
               neutralArr[items[i][0]][50]+neutralArr[items[i][0]][51],
               neutralArr[items[i][0]][52]+neutralArr[items[i][0]][53]+neutralArr[items[i][0]][54]+neutralArr[items[i][0]][55]+neutralArr[items[i][0]][56],
               neutralArr[items[i][0]][61]+neutralArr[items[i][0]][62]
@@ -1415,6 +1417,7 @@ function movesBarChartData(
     }
     for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
+        downb = oppitems[i][0] === "12" ? oppNeutralArr[oppitems[i][0]][21] +oppNeutralArr[oppitems[i][0]][1] : oppNeutralArr[oppitems[i][0]][21]
         movesArr.push(
           {
             label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
@@ -1423,7 +1426,7 @@ function movesBarChartData(
               oppNeutralArr[oppitems[i][0]][6],oppNeutralArr[oppitems[i][0]][7],oppNeutralArr[oppitems[i][0]][8],oppNeutralArr[oppitems[i][0]][9],
               oppNeutralArr[oppitems[i][0]][10],oppNeutralArr[oppitems[i][0]][11],oppNeutralArr[oppitems[i][0]][12],oppNeutralArr[oppitems[i][0]][13],
               oppNeutralArr[oppitems[i][0]][14],oppNeutralArr[oppitems[i][0]][15],oppNeutralArr[oppitems[i][0]][16],oppNeutralArr[oppitems[i][0]][17],
-              oppNeutralArr[oppitems[i][0]][18],oppNeutralArr[oppitems[i][0]][19],oppNeutralArr[oppitems[i][0]][20],oppNeutralArr[oppitems[i][0]][21],
+              oppNeutralArr[oppitems[i][0]][18],oppNeutralArr[oppitems[i][0]][19],oppNeutralArr[oppitems[i][0]][20],downb,
               oppNeutralArr[oppitems[i][0]][50]+oppNeutralArr[oppitems[i][0]][51],
               oppNeutralArr[oppitems[i][0]][52]+oppNeutralArr[oppitems[i][0]][53]+oppNeutralArr[oppitems[i][0]][54]+oppNeutralArr[oppitems[i][0]][55]+oppNeutralArr[oppitems[i][0]][56],
               oppNeutralArr[oppitems[i][0]][61]+oppNeutralArr[oppitems[i][0]][62]
@@ -1442,6 +1445,7 @@ function movesBarChartData(
   if(radio === 'Counter Hits'){
     for (let i = 0; i < items.length; i++) {
       if(items[i][1] !== 0){
+        downb = items[i][0] === "12" ? counterArr[items[i][0]][21] +counterArr[items[i][0]][1] : counterArr[items[i][0]][21]
         movesArr.push(
           {
             label: (charDict[items[i][0]]).replace(".png", ""),
@@ -1450,7 +1454,7 @@ function movesBarChartData(
               counterArr[items[i][0]][6],counterArr[items[i][0]][7],counterArr[items[i][0]][8],counterArr[items[i][0]][9],
               counterArr[items[i][0]][10],counterArr[items[i][0]][11],counterArr[items[i][0]][12],counterArr[items[i][0]][13],
               counterArr[items[i][0]][14],counterArr[items[i][0]][15],counterArr[items[i][0]][16],counterArr[items[i][0]][17],
-              counterArr[items[i][0]][18],counterArr[items[i][0]][19],counterArr[items[i][0]][20],counterArr[items[i][0]][21],
+              counterArr[items[i][0]][18],counterArr[items[i][0]][19],counterArr[items[i][0]][20],downb,
               counterArr[items[i][0]][50]+counterArr[items[i][0]][51],
               counterArr[items[i][0]][52]+counterArr[items[i][0]][53]+counterArr[items[i][0]][54]+counterArr[items[i][0]][55]+counterArr[items[i][0]][56],
               counterArr[items[i][0]][61]+counterArr[items[i][0]][62]
@@ -1465,6 +1469,7 @@ function movesBarChartData(
     }
     for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
+        downb = oppitems[i][0] === "12" ? oppCounterArr[oppitems[i][0]][21] +oppCounterArr[oppitems[i][0]][1] : oppCounterArr[oppitems[i][0]][21]
         movesArr.push(
           {
             label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
@@ -1473,7 +1478,7 @@ function movesBarChartData(
               oppCounterArr[oppitems[i][0]][6],oppCounterArr[oppitems[i][0]][7],oppCounterArr[oppitems[i][0]][8],oppCounterArr[oppitems[i][0]][9],
               oppCounterArr[oppitems[i][0]][10],oppCounterArr[oppitems[i][0]][11],oppCounterArr[oppitems[i][0]][12],oppCounterArr[oppitems[i][0]][13],
               oppCounterArr[oppitems[i][0]][14],oppCounterArr[oppitems[i][0]][15],oppCounterArr[oppitems[i][0]][16],oppCounterArr[oppitems[i][0]][17],
-              oppCounterArr[oppitems[i][0]][18],oppCounterArr[oppitems[i][0]][19],oppCounterArr[oppitems[i][0]][20],oppCounterArr[oppitems[i][0]][21],
+              oppCounterArr[oppitems[i][0]][18],oppCounterArr[oppitems[i][0]][19],oppCounterArr[oppitems[i][0]][20],downb,
               oppCounterArr[oppitems[i][0]][50]+oppCounterArr[oppitems[i][0]][51],
               oppCounterArr[oppitems[i][0]][52]+oppCounterArr[oppitems[i][0]][53]+oppCounterArr[oppitems[i][0]][54]+oppCounterArr[oppitems[i][0]][55]+oppCounterArr[oppitems[i][0]][56],
               oppCounterArr[oppitems[i][0]][61]+oppCounterArr[oppitems[i][0]][62]
@@ -1492,6 +1497,7 @@ function movesBarChartData(
   if(radio === 'Trades'){
     for (let i = 0; i < items.length; i++) {
       if(items[i][1] !== 0){
+        downb = items[i][0] === "12" ? tradeArr[items[i][0]][21] +tradeArr[items[i][0]][1] : tradeArr[items[i][0]][21]
         movesArr.push(
           {
             label: (charDict[items[i][0]]).replace(".png", ""),
@@ -1500,7 +1506,7 @@ function movesBarChartData(
               tradeArr[items[i][0]][6],tradeArr[items[i][0]][7],tradeArr[items[i][0]][8],tradeArr[items[i][0]][9],
               tradeArr[items[i][0]][10],tradeArr[items[i][0]][11],tradeArr[items[i][0]][12],tradeArr[items[i][0]][13],
               tradeArr[items[i][0]][14],tradeArr[items[i][0]][15],tradeArr[items[i][0]][16],tradeArr[items[i][0]][17],
-              tradeArr[items[i][0]][18],tradeArr[items[i][0]][19],tradeArr[items[i][0]][20],tradeArr[items[i][0]][21],
+              tradeArr[items[i][0]][18],tradeArr[items[i][0]][19],tradeArr[items[i][0]][20],downb,
               tradeArr[items[i][0]][50]+tradeArr[items[i][0]][51],
               tradeArr[items[i][0]][52]+tradeArr[items[i][0]][53]+tradeArr[items[i][0]][54]+tradeArr[items[i][0]][55]+tradeArr[items[i][0]][56],
               tradeArr[items[i][0]][61]+tradeArr[items[i][0]][62]
@@ -1515,6 +1521,7 @@ function movesBarChartData(
     }
     for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
+        downb = oppitems[i][0] === "12" ? oppTradeArr[oppitems[i][0]][21] +oppTradeArr[oppitems[i][0]][1] : oppTradeArr[oppitems[i][0]][21]
           movesArr.push(
             {
               label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
@@ -1523,7 +1530,7 @@ function movesBarChartData(
                 oppTradeArr[oppitems[i][0]][6],oppTradeArr[oppitems[i][0]][7],oppTradeArr[oppitems[i][0]][8],oppTradeArr[oppitems[i][0]][9],
                 oppTradeArr[oppitems[i][0]][10],oppTradeArr[oppitems[i][0]][11],oppTradeArr[oppitems[i][0]][12],oppTradeArr[oppitems[i][0]][13],
                 oppTradeArr[oppitems[i][0]][14],oppTradeArr[oppitems[i][0]][15],oppTradeArr[oppitems[i][0]][16],oppTradeArr[oppitems[i][0]][17],
-                oppTradeArr[oppitems[i][0]][18],oppTradeArr[oppitems[i][0]][19],oppTradeArr[oppitems[i][0]][20],oppTradeArr[oppitems[i][0]][21],
+                oppTradeArr[oppitems[i][0]][18],oppTradeArr[oppitems[i][0]][19],oppTradeArr[oppitems[i][0]][20],downb,
                 oppTradeArr[oppitems[i][0]][50]+oppTradeArr[oppitems[i][0]][51],
                 oppTradeArr[oppitems[i][0]][52]+oppTradeArr[oppitems[i][0]][53]+oppTradeArr[oppitems[i][0]][54]+oppTradeArr[oppitems[i][0]][55]+oppTradeArr[oppitems[i][0]][56],
                 oppTradeArr[oppitems[i][0]][61]+oppTradeArr[oppitems[i][0]][62]
@@ -1542,6 +1549,7 @@ function movesBarChartData(
   if(radio === 'Kill Moves'){
     for (let i = 0; i < items.length; i++) {
       if(items[i][1] !== 0){
+        downb = items[i][0] === "12" ? killsArr[items[i][0]][21] +killsArr[items[i][0]][1] : killsArr[items[i][0]][21]
         movesArr.push(
           {
             label: (charDict[items[i][0]]).replace(".png", ""),
@@ -1550,7 +1558,7 @@ function movesBarChartData(
               killsArr[items[i][0]][6],killsArr[items[i][0]][7],killsArr[items[i][0]][8],killsArr[items[i][0]][9],
               killsArr[items[i][0]][10],killsArr[items[i][0]][11],killsArr[items[i][0]][12],killsArr[items[i][0]][13],
               killsArr[items[i][0]][14],killsArr[items[i][0]][15],killsArr[items[i][0]][16],killsArr[items[i][0]][17],
-              killsArr[items[i][0]][18],killsArr[items[i][0]][19],killsArr[items[i][0]][20],killsArr[items[i][0]][21],
+              killsArr[items[i][0]][18],killsArr[items[i][0]][19],killsArr[items[i][0]][20],downb,
               killsArr[items[i][0]][50]+killsArr[items[i][0]][51],
               killsArr[items[i][0]][52]+killsArr[items[i][0]][53]+killsArr[items[i][0]][54]+killsArr[items[i][0]][55]+killsArr[items[i][0]][56],
               killsArr[items[i][0]][61]+killsArr[items[i][0]][62]
@@ -1565,6 +1573,7 @@ function movesBarChartData(
     }
     for (let i = 0; i < oppitems.length; i++) {
       if(oppitems[i][1] !== 0){
+        downb = oppitems[i][0] === "12" ? oppKillsArr[oppitems[i][0]][21] +oppKillsArr[oppitems[i][0]][1] : oppKillsArr[oppitems[i][0]][21]
         movesArr.push(
           {
             label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
@@ -1573,7 +1582,7 @@ function movesBarChartData(
               oppKillsArr[oppitems[i][0]][6],oppKillsArr[oppitems[i][0]][7],oppKillsArr[oppitems[i][0]][8],oppKillsArr[oppitems[i][0]][9],
               oppKillsArr[oppitems[i][0]][10],oppKillsArr[oppitems[i][0]][11],oppKillsArr[oppitems[i][0]][12],oppKillsArr[oppitems[i][0]][13],
               oppKillsArr[oppitems[i][0]][14],oppKillsArr[oppitems[i][0]][15],oppKillsArr[oppitems[i][0]][16],oppKillsArr[oppitems[i][0]][17],
-              oppKillsArr[oppitems[i][0]][18],oppKillsArr[oppitems[i][0]][19],oppKillsArr[oppitems[i][0]][20],oppKillsArr[oppitems[i][0]][21],
+              oppKillsArr[oppitems[i][0]][18],oppKillsArr[oppitems[i][0]][19],oppKillsArr[oppitems[i][0]][20],downb,
               oppKillsArr[oppitems[i][0]][50]+oppKillsArr[oppitems[i][0]][51],
               oppKillsArr[oppitems[i][0]][52]+oppKillsArr[oppitems[i][0]][53]+oppKillsArr[oppitems[i][0]][54]+oppKillsArr[oppitems[i][0]][55]+oppKillsArr[oppitems[i][0]][56],
               oppKillsArr[oppitems[i][0]][61]+oppKillsArr[oppitems[i][0]][62]

@@ -4,7 +4,6 @@ import Chart from 'chart.js';
 
 export default class SuccessWhiffBarChart extends Component {
   render(){
-    console.log(this.props.charImage)
     Chart.Tooltip.positioners.middle = elements => {
       let model = elements[0]._model;
       return {
