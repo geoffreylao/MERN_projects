@@ -54,12 +54,20 @@ function parse_slp(filename, arr){
   
     var p0_stocks = [];
     var p1_stocks = [];
+    p0Kills = 0;
+    p1Kills = 0;
   
     for (let index = 0; index < stats.stocks.length; index++) {
       if(stats.stocks[index].playerIndex == 0){
         p0_stocks.push(stats.stocks[index]);
+        if(stats.stocks[index].deathAnimation !== null){
+          p1Kills++;
+        }
       }else if(stats.stocks[index].playerIndex == 1){
         p1_stocks.push(stats.stocks[index]);
+        if(stats.stocks[index].deathAnimation !== null){
+          p0Kills++;
+        }
       }
     }
   
@@ -164,16 +172,16 @@ function parse_slp(filename, arr){
             }
         }
 
-        if(stats.overall[0].killCount == 4){
+        if(p0Kills == 4){
             winner = 0;
-        }else if(stats.overall[1].killCount == 4){
+        }else if(p1Kills == 4){
             winner =  1;
         }else if(metadata.lastFrame == 28800){
-            if(stats.overall[0].killCount > stats.overall[1].killCount){
+            if(p0Kills > p1Kills){
                 winner =  0;
-            }else if(stats.overall[0].killCount < stats.overall[1].killCount){
+            }else if(p0Kills < p1Kills){
                 winner =  1;
-            }else if(stats.overall[0].killCount == stats.overall[1].killCount){
+            }else if(p0Kills == p1Kills){
                 if(player_zero_percent > player_one_percent){
                     winner = 1;
                 }else if(player_zero_percent < player_one_percent){
@@ -199,31 +207,31 @@ function parse_slp(filename, arr){
         }
     }
   
-    function l_cancel_percentage(player_index){
+    // function l_cancel_percentage(player_index){
     
-      var failed = 0;
-      var successful = 0;
+    //   var failed = 0;
+    //   var successful = 0;
   
-      for (let i = 0; i < stats.lastFrame; i++) {
-          for (let j = 0; j < frames[i].players.length; j++) {
-              if(frames[i].players[j].post.lCancelStatus == 1){
-                  if(frames[i].players[j].post.playerIndex == player_index){
-                      ++successful;
-                  }
-              }else if(frames[i].players[j].post.lCancelStatus == 2){
-                  if(frames[i].players[j].post.playerIndex == player_index){
-                      ++failed;
-                  }
-              }
-          }
-      }
+    //   for (let i = 0; i < stats.lastFrame; i++) {
+    //       for (let j = 0; j < frames[i].players.length; j++) {
+    //           if(frames[i].players[j].post.lCancelStatus == 1){
+    //               if(frames[i].players[j].post.playerIndex == player_index){
+    //                   ++successful;
+    //               }
+    //           }else if(frames[i].players[j].post.lCancelStatus == 2){
+    //               if(frames[i].players[j].post.playerIndex == player_index){
+    //                   ++failed;
+    //               }
+    //           }
+    //       }
+    //   }
   
-      var l_cancel_percentage = (successful / (successful + failed)) * 100;
-      return Math.round(l_cancel_percentage);
-    }
+    //   var l_cancel_percentage = (successful / (successful + failed)) * 100;
+    //   return Math.round(l_cancel_percentage);
+    // }
 
     var myobj = {
-      matchid: new Date(metadata.startAt) + metadata.players[0].names.code + metadata.players[1].names.code,
+      matchid: metadata.startAt + metadata.players[0].names.code + metadata.players[1].names.code,
       settings: {
         isTeams: settings.isTeams,
         isPal: settings.isPAL,
@@ -244,6 +252,7 @@ function parse_slp(filename, arr){
           characterId: settings.players[0].characterId,
           characterColor: settings.players[0].characterColor,
           code: metadata.players[0].names.code,
+          name: metadata.players[0].names.netplay,
           characterString: char_dict[settings.players[0].characterId],
           actionCounts: {
             wavedashCount: stats.actionCounts[0].wavedashCount,
@@ -264,15 +273,19 @@ function parse_slp(filename, arr){
           },
           conversionCount: stats.overall[0].conversionCount,
           totalDamage: stats.overall[0].totalDamage,
-          killCount: stats.overall[0].killCount,
+          killCount: p0Kills,
+          creditedKillCount: stats.overall[0].killCount,
           successfulConversions: stats.overall[0].successfulConversions.count,
           openings: stats.overall[0].openingsPerKill.count,
           neutralWins: stats.overall[0].neutralWinRatio.count,
           counterHits: stats.overall[0].counterHitRatio.count,
           trades: stats.overall[0].beneficialTradeRatio.count,
-          deathCount: stats.overall[1].killCount,
-          lcancelPercent: l_cancel_percentage(0),
+          deathCount: p1Kills,
+          lcancelPercent: parseInt((stats.actionCounts[0].lCancelCount.success / (stats.actionCounts[0].lCancelCount.success + stats.actionCounts[0].lCancelCount.fail)) * 100),
           grabCount: stats.actionCounts[0].grabCount,
+          throwCount: stats.actionCounts[0].throwCount,
+          groundTechCount: stats.actionCounts[0].groundTechCount,
+          wallTechCount: stats.actionCounts[0].wallTechCount,
           stocks: p0_stocks
         },
         {
@@ -280,6 +293,7 @@ function parse_slp(filename, arr){
           characterId: settings.players[1].characterId,
           characterColor: settings.players[1].characterColor,
           code: metadata.players[1].names.code,
+          name:  metadata.players[1].names.netplay,
           characterString: char_dict[settings.players[1].characterId],
           actionCounts: {
             wavedashCount: stats.actionCounts[1].wavedashCount,
@@ -300,14 +314,19 @@ function parse_slp(filename, arr){
           },
           conversionCount: stats.overall[1].conversionCount,
           totalDamage: stats.overall[1].totalDamage,
-          killCount: stats.overall[1].killCount,
+          killCount: p1Kills,
+          creditedKillCount: stats.overall[1].killCount,
           successfulConversions: stats.overall[1].successfulConversions.count,
           openings: stats.overall[1].openingsPerKill.count,
           neutralWins: stats.overall[1].neutralWinRatio.count,
           counterHits: stats.overall[1].counterHitRatio.count,
           trades: stats.overall[1].beneficialTradeRatio.count,
-          deathCount: stats.overall[0].killCount,
-          lcancelPercent: l_cancel_percentage(1),
+          deathCount: p0Kills,
+          lcancelPercent: parseInt((stats.actionCounts[1].lCancelCount.success / (stats.actionCounts[1].lCancelCount.success + stats.actionCounts[1].lCancelCount.fail)) * 100),
+          grabCount: stats.actionCounts[1].grabCount,
+          throwCount: stats.actionCounts[1].throwCount,
+          groundTechCount: stats.actionCounts[1].groundTechCount,
+          wallTechCount: stats.actionCounts[1].wallTechCount,
           stocks: p1_stocks
         }
       ],

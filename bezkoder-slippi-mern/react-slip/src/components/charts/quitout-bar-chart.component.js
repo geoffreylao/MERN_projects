@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
-import {Pie} from 'react-chartjs-2';
+import {Bar} from 'react-chartjs-2';
 import "chartjs-plugin-labels";
+import Chart from 'chart.js';
 
-export default class QuitoutPieChart extends Component {
+export default class QuitoutBarChart extends Component {
   render(){
+    Chart.Tooltip.positioners.middle = elements => {
+      let model = elements[0]._model;
+      return {
+        x: model.x,
+        y: ((model.base + model.y) / 2)
+      };
+    };
+
     return(
       <div>
-        <Pie
+        <Bar
           data={{
             labels: this.props.charLabels,
             datasets: [
@@ -15,7 +24,8 @@ export default class QuitoutPieChart extends Component {
                 backgroundColor: this.props.charbackgroundColor,
                 borderColor: this.props.charborderColor,
                 hoverBackgroundColor: this.props.charhoverBackgroundColor,
-                data: this.props.charData
+                data: this.props.charData,
+                borderWidth: 1
               }
             ]
           }}
@@ -28,15 +38,12 @@ export default class QuitoutPieChart extends Component {
               display: true,
               text: this.props.title,
               fontSize: 20,
-              position: 'top'
+              position: 'top',
+              padding: 50
             },
             legend: {
-              display: this.props.labelBool,
+              display: false,
               position: 'left',
-              labels: {
-                boxWidth: 20,
-              
-              }
             },
             plugins: {
               labels: {
@@ -45,14 +52,18 @@ export default class QuitoutPieChart extends Component {
               }
             },
             tooltips: {
+              
+              yAlign: 'center',
+              position: 'middle',
               callbacks: {
                 label: function(tooltipItem, data) {
                   var dataset = data.datasets[tooltipItem.datasetIndex];
-
-                  var currentValue = dataset.data[tooltipItem.index];
-                  var oglabel = data.labels[tooltipItem.index];    
-                  return oglabel + " : " + currentValue + "%";
+                  return data.labels[tooltipItem.index] + ': ' + dataset.data[tooltipItem.index];
+                },
+                title: function(tooltipItem, data) {
+                  return data.datasets[tooltipItem[0].datasetIndex].label
                 }
+                
               }
             }
           }}

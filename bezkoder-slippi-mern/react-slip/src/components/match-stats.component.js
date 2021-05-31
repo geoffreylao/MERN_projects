@@ -15,7 +15,8 @@ import VerticalBarChart from './charts/vertical-bar-chart.component';
 import ActionsBarChart from './charts/action-bar-chart.component';
 import MovesBarChart from './charts/moves-bar-chart.component';
 import TimeLineChart from './charts/time-line-chart.component';
-import QuitoutPieChart from './charts/quitout-pie-chart.component';
+import QuitoutPieChart from './charts/quitout-bar-chart.component';
+import FourStatBarChart from './charts/four-stat-bar-chart.component';
 
 var charDict =
  {
@@ -369,6 +370,39 @@ function getStats(connect_code, res){
 
   var quitoutmyCharUsage = new Array(26).fill(0);
   var quitoutmyOppCharUsage = new Array(26).fill(0);
+
+    // death direction
+  var deathDirectionCharUsage = Array.from({length: 4}, e => Array(26).fill(0));
+
+  var deathDirectionOppCharUsage =  Array.from({length: 4}, e => Array(26).fill(0));
+
+  // grab success and whiffs
+  var grabCountSuccessCharUsage = new Array(26).fill(0);
+  var grabCountWhiffCharUsage = new Array(26).fill(0);
+
+  var grabCountSuccessOppCharUsage = new Array(26).fill(0);
+  var grabCountWhiffOppCharUsage = new Array(26).fill(0);
+
+  // up forward back down
+  var throwCountCharUsage =  Array.from({length: 4}, e => Array(26).fill(0))
+  var throwCountOppCharUsage =  Array.from({length: 4}, e => Array(26).fill(0))
+
+  // backward forward neutral fail
+  var groundTechCountCharUsage =  Array.from({length: 4}, e => Array(26).fill(0))
+  var groundTechCountOppCharUsage =  Array.from({length: 4}, e => Array(26).fill(0))
+
+  // grab success and whiffs
+  var wallTechCountSuccessCharUsage = new Array(26).fill(0);
+  var wallTechCountFailCharUsage = new Array(26).fill(0);
+
+  var wallTechCountSuccessOppCharUsage = new Array(26).fill(0);
+  var wallTechCountFailOppCharUsage = new Array(26).fill(0);
+  
+  var myCreditedKills = 0;
+  var myOppCreditedKills = 0;
+
+  var sdCharUsage = new Array(26).fill(0);
+  var sdOppCharUsage = new Array(26).fill(0);
   
   var frames = 0;
 
@@ -458,12 +492,56 @@ function getStats(connect_code, res){
           myBeneficialTrades += res[i].players[j].trades;
           myOpenings += res[i].players[j].openings;
           myKills += res[i].players[j].killCount;
+          myCreditedKills += res[i].players[j].creditedKillCount;
           myConversions += res[i].players[j].conversionCount;
           mySuccessfulConversions += res[i].players[j].successfulConversions;
           myDamage += res[i].players[j].totalDamage;
           myTotalInputs += res[i].players[j].inputCounts.total;
           myTotalDigitalInputs += res[i].players[j].inputCounts.buttons;
+
+          
+          for (let k = 0; k < res[i].players[j].stocks.length; k++) {
+            switch (res[i].players[j].stocks[k].deathAnimation) {
+              case 0:
+                deathDirectionCharUsage[0][res[i].players[j].characterId]++;
+                break;
+              case 1:
+                deathDirectionCharUsage[1][res[i].players[j].characterId]++;
+                break;
+              case 2:
+                deathDirectionCharUsage[2][res[i].players[j].characterId]++;
+                break;
+              case null:
+                break;
+              default:
+                deathDirectionCharUsage[3][res[i].players[j].characterId]++;
+                break;
+            }            
+          }
   
+          grabCountSuccessCharUsage[res[i].players[j].characterId] += (res[i].players[j].throwCount.up + res[i].players[j].throwCount.forward
+            + res[i].players[j].throwCount.back + res[i].players[j].throwCount.down);
+          grabCountWhiffCharUsage[res[i].players[j].characterId] += res[i].players[j].grabCount.fail;
+
+          throwCountCharUsage[0][res[i].players[j].characterId] += res[i].players[j].throwCount.up;
+          throwCountCharUsage[1][res[i].players[j].characterId] += res[i].players[j].throwCount.forward;
+          throwCountCharUsage[2][res[i].players[j].characterId] += res[i].players[j].throwCount.back;
+          throwCountCharUsage[3][res[i].players[j].characterId] += res[i].players[j].throwCount.down;
+
+          groundTechCountCharUsage[0][res[i].players[j].characterId] += res[i].players[j].groundTechCount.backward;
+          groundTechCountCharUsage[1][res[i].players[j].characterId] += res[i].players[j].groundTechCount.forward;
+          groundTechCountCharUsage[2][res[i].players[j].characterId] += res[i].players[j].groundTechCount.neutral;
+          groundTechCountCharUsage[3][res[i].players[j].characterId] += res[i].players[j].groundTechCount.fail;
+
+          wallTechCountSuccessCharUsage[res[i].players[j].characterId] += res[i].players[j].wallTechCount.success;
+          wallTechCountFailCharUsage[res[i].players[j].characterId] += res[i].players[j].wallTechCount.fail;
+
+          if(j === 0){
+            sdCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[1].creditedKillCount;
+          }else if(j === 1){
+            sdCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[0].creditedKillCount;
+          }
+
           if(!isNaN(res[i].players[j].lcancelPercent)){
             myTotalLcancel += res[i].players[j].lcancelPercent;
           }else{
@@ -534,12 +612,56 @@ function getStats(connect_code, res){
           myOppBeneficialTrades += res[i].players[j].trades;
           myOppOpenings += res[i].players[j].openings;
           myOppKills += res[i].players[j].killCount;
+          myOppCreditedKills += res[i].players[j].creditedKillCount;
           myOppConversions += res[i].players[j].conversionCount;
           myOppSuccessfulConversions += res[i].players[j].successfulConversions;
           myOppDamage += res[i].players[j].totalDamage;
           myOppTotalInputs += res[i].players[j].inputCounts.total;
           myOppTotalDigitalInputs += res[i].players[j].inputCounts.buttons;
   
+          for (let k = 0; k < res[i].players[j].stocks.length; k++) {
+            switch (res[i].players[j].stocks[k].deathAnimation) {
+              case 0:
+                deathDirectionOppCharUsage[0][res[i].players[j].characterId]++;
+                break;
+              case 1:
+                deathDirectionOppCharUsage[1][res[i].players[j].characterId]++;
+                break;
+              case 2:
+                deathDirectionOppCharUsage[2][res[i].players[j].characterId]++;
+                break;
+              case null:
+                break;
+              default:
+                deathDirectionOppCharUsage[3][res[i].players[j].characterId]++;
+                break;
+            }
+            
+          }
+  
+          grabCountSuccessOppCharUsage[res[i].players[j].characterId] += (res[i].players[j].throwCount.up + res[i].players[j].throwCount.forward
+                                                                           + res[i].players[j].throwCount.back + res[i].players[j].throwCount.down);
+          grabCountWhiffOppCharUsage[res[i].players[j].characterId] += res[i].players[j].grabCount.fail;
+
+          throwCountOppCharUsage[0][res[i].players[j].characterId] += res[i].players[j].throwCount.up;
+          throwCountOppCharUsage[1][res[i].players[j].characterId] += res[i].players[j].throwCount.forward;
+          throwCountOppCharUsage[2][res[i].players[j].characterId] += res[i].players[j].throwCount.back;
+          throwCountOppCharUsage[3][res[i].players[j].characterId] += res[i].players[j].throwCount.down;
+
+          groundTechCountOppCharUsage[0][res[i].players[j].characterId] += res[i].players[j].groundTechCount.backward;
+          groundTechCountOppCharUsage[1][res[i].players[j].characterId] += res[i].players[j].groundTechCount.forward;
+          groundTechCountOppCharUsage[2][res[i].players[j].characterId] += res[i].players[j].groundTechCount.neutral;
+          groundTechCountOppCharUsage[3][res[i].players[j].characterId] += res[i].players[j].groundTechCount.fail;
+
+          wallTechCountSuccessOppCharUsage[res[i].players[j].characterId] += res[i].players[j].wallTechCount.success;
+          wallTechCountFailOppCharUsage[res[i].players[j].characterId] += res[i].players[j].wallTechCount.fail;
+
+          if(j === 0){
+            sdOppCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[1].creditedKillCount;
+          }else if(j === 1){
+            sdOppCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[0].creditedKillCount;
+          }
+
           if(!isNaN(res[i].players[j].lcancelPercent)){
             myOppTotalLcancel += res[i].players[j].lcancelPercent;
           }else{
@@ -877,7 +999,41 @@ function getStats(connect_code, res){
 
     // opponents
     uniqueOpps: items.length,
-    oneAndDoned: oneAndDone
+    oneAndDoned: oneAndDone,
+
+    // death direction
+    deathDirectionCharUsage: deathDirectionCharUsage,
+    deathDirectionOppCharUsage: deathDirectionOppCharUsage,
+
+    // grab
+    grabCountSuccessCharUsage: grabCountSuccessCharUsage,
+    grabCountWhiffCharUsage: grabCountWhiffCharUsage,
+
+    grabCountSuccessOppCharUsage: grabCountSuccessOppCharUsage,
+    grabCountWhiffOppCharUsage: grabCountWhiffOppCharUsage,
+
+    // throws
+    throwCountCharUsage: throwCountCharUsage,
+    throwCountOppCharUsage: throwCountOppCharUsage,
+
+    // ground tech
+    groundTechCountCharUsage: groundTechCountCharUsage,
+    groundTechCountOppCharUsage: groundTechCountOppCharUsage,
+
+    // wall tech
+    wallTechCountSuccessCharUsage: wallTechCountSuccessCharUsage,
+    wallTechCountFailCharUsage: wallTechCountFailCharUsage,
+
+    wallTechCountSuccessOppCharUsage: wallTechCountSuccessOppCharUsage,
+    wallTechCountFailOppCharUsage: wallTechCountFailOppCharUsage,
+
+    // credited kills
+
+    creditedKills: myCreditedKills,
+    oppCreditedKills: myOppCreditedKills,
+
+    sdCharUsage: sdCharUsage,
+    sdOppCharUsage: sdOppCharUsage,
   }
 
   return resObj
@@ -941,7 +1097,7 @@ function createPieChartCharacterUsage(charUsage, title, labelBool){
 
 }
 
-function createQuitoutPieChartCharacterUsage(charUsage, title, labelBool){
+function createQuitoutBarChartCharacterUsage(charUsage, title, labelBool){
   var dict = {}
 
   for (let i = 0; i < charUsage.length; i++) {        
@@ -962,24 +1118,18 @@ function createQuitoutPieChartCharacterUsage(charUsage, title, labelBool){
   var charbackgroundColor = [];
   var charborderColor = [];
   var charhoverColor = [];
-  var sum = charUsage.reduce(function(a, b){
-    return a + b;
-  }, 0);
 
   for (let j = 0; j < items.length; j++) {
     if((items[j][1]) !== 0){
       charLabels.push((charDict[items[j][0]]).replace(".png", ""));
       charData.push(items[j][1]);
 
-      if(items[j][1]/sum > 0.060) {
-        charImage.push({
-          src: '/stock_icons/' + charDict[items[j][0]],
-          width: 32,
-          height: 32,
-        });
-      }
-
-
+      charImage.push({
+        src: '/stock_icons/' + charDict[items[j][0]],
+        width: 32,
+        height: 32,
+      });
+    
       charbackgroundColor.push(charbackgroundColorDict[items[j][0]]);
       charborderColor.push(charborderColorDict[items[j][0]]);
       charhoverColor.push(charhoverColorDict[items[j][0]]);
@@ -1417,6 +1567,84 @@ function movesBarChartData(
     }   
   }
   return movesArr;
+
+}
+
+function fourStatBarChartComponent(charUsage, charStats, oppCharUsage, oppCharStats, checked){
+  // creates sorted 2d array for character id and character usage
+  var dict = {}
+
+  for (let i = 0; i < charUsage.length; i++) {        
+    dict[i] = charUsage[i];
+  }
+
+  var items = Object.keys(dict).map(function(key) {
+    return [key, dict[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var oppdict = {}
+
+  for (let i = 0; i < oppCharUsage.length; i++) {        
+    oppdict[i] = oppCharUsage[i];
+  }
+
+  var oppitems = Object.keys(dict).map(function(key) {
+    return [key, oppdict[key]];
+  });
+
+  oppitems.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var deathsArr = []
+
+  for (let i = 0; i < items.length; i++) {
+    if(items[i][1] !== 0){
+      deathsArr.push(
+        {
+          label: (charDict[items[i][0]]).replace(".png", ""),
+          data: [
+            charStats[0][items[i][0]],
+            charStats[1][items[i][0]],
+            charStats[2][items[i][0]],
+            charStats[3][items[i][0]]
+          ],
+          backgroundColor: charbackgroundColorDict[items[i][0]],
+          borderColor: charborderColorDict[items[i][0]],
+          borderWidth: 1,
+          stack: 'player'
+        }
+      )
+    }
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    if(oppitems[i][1] !== 0){
+      deathsArr.push(
+        {
+          label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
+          data: [
+            oppCharStats[0][items[i][0]],
+            oppCharStats[1][items[i][0]],
+            oppCharStats[2][items[i][0]],
+            oppCharStats[3][items[i][0]]
+          ],
+          backgroundColor: charbackgroundColorDict[items[i][0]],
+          borderColor: charborderColorDict[items[i][0]],
+          borderWidth: 1,
+          stack: 'opponent',
+          hidden: !checked
+        }
+      )
+    }
+  }   
+
+  //console.log(deathsArr);
+  return deathsArr;
 
 }
 
@@ -1882,18 +2110,40 @@ export default class MatchStats extends Component {
             </div>
             <div className="row">
               <div className="col-md">
-                {createQuitoutPieChartCharacterUsage(myStats.quitoutPercent, 'Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
-                <label>
-                  Toggle label:
-                  <input
-                    name="charPieCheck"            
-                    type="checkbox"
-                    checked={this.state.charPieCheck}
-                    onChange={this.handleCheckChange} />
-                </label>
+                {createQuitoutBarChartCharacterUsage(myStats.quitoutPercent, 'Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
               </div>
+            </div>
+            <div className="row">
               <div className="col-md">
-                {createQuitoutPieChartCharacterUsage(myStats.quitoutOppPercent, 'Opponent Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
+                {createQuitoutBarChartCharacterUsage(myStats.quitoutOppPercent, 'Opponent Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createQuitoutBarChartCharacterUsage(myStats.quitoutOppPercent, 'Opponent Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+              <label>
+                Opponent Data:
+                <input
+                  name="check"            
+                  type="checkbox"
+                  checked={this.state.check}
+                  onChange={this.handleCheckChange} />
+              </label>
+                <FourStatBarChart
+                  dataset = {fourStatBarChartComponent(
+                    myStats.charUsage,
+                    myStats.deathDirectionCharUsage,
+                    myStats.oppCharUsage,
+                    myStats.deathDirectionOppCharUsage,
+                    this.state.check
+                      )}
+                  title = 'Deaths Direction'
+                  labels = {['Down', 'Left', 'Right', 'Up']}
+                />
               </div>
             </div>
           </div>

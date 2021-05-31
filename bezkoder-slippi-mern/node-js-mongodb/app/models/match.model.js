@@ -1,7 +1,12 @@
+// TODO update with new model
+
 module.exports = mongoose => {
   const Match = mongoose.model(
     "matches",
     mongoose.Schema({
+      matchid: {
+        type: String
+      },
       settings: {
         isTeams: {
           type: Boolean
@@ -31,7 +36,10 @@ module.exports = mongoose => {
         },
         winner: {
           type: String
-        }
+        },
+        firstBlood: {
+          type: String
+        },
       },
       players:[{
         playerIndex: {
