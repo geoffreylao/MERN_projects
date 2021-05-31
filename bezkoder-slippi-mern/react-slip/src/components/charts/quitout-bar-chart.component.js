@@ -58,11 +58,9 @@ export default class QuitoutBarChart extends Component {
               callbacks: {
                 label: function(tooltipItem, data) {
                   var dataset = data.datasets[tooltipItem.datasetIndex];
-                  return data.labels[tooltipItem.index] + ': ' + dataset.data[tooltipItem.index];
+                  return dataset.data[tooltipItem.index] + "%";
                 },
-                title: function(tooltipItem, data) {
-                  return data.datasets[tooltipItem[0].datasetIndex].label
-                }
+
                 
               }
             }

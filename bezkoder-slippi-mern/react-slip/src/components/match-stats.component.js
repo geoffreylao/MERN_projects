@@ -15,8 +15,9 @@ import VerticalBarChart from './charts/vertical-bar-chart.component';
 import ActionsBarChart from './charts/action-bar-chart.component';
 import MovesBarChart from './charts/moves-bar-chart.component';
 import TimeLineChart from './charts/time-line-chart.component';
-import QuitoutPieChart from './charts/quitout-bar-chart.component';
+import QuitoutBarChart from './charts/quitout-bar-chart.component';
 import FourStatBarChart from './charts/four-stat-bar-chart.component';
+import SuccessWhiffBarChart from './charts/success-whiff-bar-chart.component';
 
 var charDict =
  {
@@ -403,7 +404,10 @@ function getStats(connect_code, res){
 
   var sdCharUsage = new Array(26).fill(0);
   var sdOppCharUsage = new Array(26).fill(0);
-  
+
+  var deathUsage = new Array(26).fill(0);
+  var deathOppUsage = new Array(26).fill(0);
+
   var frames = 0;
 
   for (let i = 0; i < res.length; i++) {
@@ -538,9 +542,13 @@ function getStats(connect_code, res){
 
           if(j === 0){
             sdCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[1].creditedKillCount;
+            deathUsage[res[i].players[j].characterId] += res[i].players[1].creditedKillCount;
           }else if(j === 1){
             sdCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[0].creditedKillCount;
+            deathUsage[res[i].players[j].characterId] += res[i].players[0].creditedKillCount;
           }
+
+          
 
           if(!isNaN(res[i].players[j].lcancelPercent)){
             myTotalLcancel += res[i].players[j].lcancelPercent;
@@ -658,9 +666,13 @@ function getStats(connect_code, res){
 
           if(j === 0){
             sdOppCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[1].creditedKillCount;
+            deathOppUsage[res[i].players[j].characterId] += res[i].players[1].creditedKillCount;
           }else if(j === 1){
             sdOppCharUsage[res[i].players[j].characterId] += res[i].players[j].deathCount - res[i].players[0].creditedKillCount;
+            deathOppUsage[res[i].players[j].characterId] += res[i].players[0].creditedKillCount;
           }
+
+         
 
           if(!isNaN(res[i].players[j].lcancelPercent)){
             myOppTotalLcancel += res[i].players[j].lcancelPercent;
@@ -855,10 +867,13 @@ function getStats(connect_code, res){
   }
 
   var rangewinrate = []
+  var totalranges = new Array(10).fill(0);
   
   for (let i = 0; i < winrange.length; i++) {
     rangewinrate[i] = (winrange[i] / (winrange[i] + lossrange[i])) * 100;
+    totalranges[i] = winrange[i] + lossrange[i];
   }
+
 
   var oneAndDone = 0
 
@@ -875,6 +890,8 @@ function getStats(connect_code, res){
     quitoutmyCharUsagePercent[i] = quitoutmyCharUsage[i] / myCharUsage[i] ? parseInt((quitoutmyCharUsage[i] / myCharUsage[i])*100) : 0;
     quitoutmyOppCharUsagePercent[i] = quitoutmyOppCharUsage[i] / myOppCharUsage[i] ? parseInt((quitoutmyOppCharUsage[i] / myOppCharUsage[i]) * 100) : 0;
   }
+
+  console.log(deathUsage)
 
   var resObj = {
     // Summary
@@ -1034,6 +1051,11 @@ function getStats(connect_code, res){
 
     sdCharUsage: sdCharUsage,
     sdOppCharUsage: sdOppCharUsage,
+
+    totalranges: totalranges,
+
+    deathUsage: deathUsage,
+    deathOppUsage: deathOppUsage,
   }
 
   return resObj
@@ -1136,7 +1158,7 @@ function createQuitoutBarChartCharacterUsage(charUsage, title, labelBool){
     }    
   }
 
-  return <QuitoutPieChart 
+  return <QuitoutBarChart 
             charData = {charData}
             charLabels = {charLabels}
             charImage = {charImage}
@@ -1643,9 +1665,64 @@ function fourStatBarChartComponent(charUsage, charStats, oppCharUsage, oppCharSt
     }
   }   
 
-  //console.log(deathsArr);
   return deathsArr;
 
+}
+
+function createSuccessWhiffBarChart(success, whiff, title, successLabel, whiffLabel){
+  var dict = {}
+
+  for (let i = 0; i < success.length; i++) {        
+    dict[i] = success[i];
+  }
+
+  var items = Object.keys(dict).map(function(key) {
+    return [key, dict[key]];
+  });
+
+  items.sort(function(first, second) {
+    return second[1] - first[1];
+  });
+
+  var charLabels = [];
+  var datasetArr = [];
+  var succData = [];
+  var failData = [];
+  var charImage = [];
+
+  for (let j = 0; j < items.length; j++) {
+    if((items[j][1]) !== 0){
+      charLabels.push((charDict[items[j][0]]).replace(".png", ""))
+      charImage.push(charDict[items[j][0]]);
+      succData.push(success[items[j][0]])
+      failData.push(whiff[items[j][0]])
+    }    
+  }
+
+  datasetArr.push({
+    label: successLabel,
+    data: succData,
+    backgroundColor: "rgb(64, 176, 166, 0.3)",
+    borderColor: "rgb(64, 176, 166, 1)",
+    borderWidth: 1
+  })
+
+  datasetArr.push({
+    label: whiffLabel,
+    data: failData,
+    backgroundColor: "rgb(255, 190, 106, 0.5)",
+    borderColor: "rgb(255, 190, 106, 1)",
+    borderWidth: 1.5
+  })
+
+  console.log(charImage)
+
+  return <SuccessWhiffBarChart 
+            labels = {charLabels}
+            charImage = {charImage}
+            dataset = {datasetArr}
+            title = {title}
+/>
 }
 
 export default class MatchStats extends Component {
@@ -1825,7 +1902,7 @@ export default class MatchStats extends Component {
           myStats: getStats(this.state.searchCode, response.data)
         });
         
-        console.log(response.data);     
+        //console.log(response.data);     
       })
       .catch(e => {
         this.setState({
@@ -2081,7 +2158,6 @@ export default class MatchStats extends Component {
             <div className="row">
               <div className="col-sm"> 
                 <div id="container2">
-                  {console.log(myStats.rivalCharId)}
                   <img src="cssp2bg.png" width="272" height="376" alt=""/>
                   <img src={`char_portraits/${myStats.rivalsCharId}/${myStats.rivalsColorId}.png`} width="272" height="376" alt=""/>
                   <img src="cssp2.png" width="272" height="376" alt=""/>
@@ -2103,7 +2179,8 @@ export default class MatchStats extends Component {
             <div className="row">
               <div className="col-md" id="bigbar">
                 <TimeLineChart 
-                  data={myStats.timeRangeWinrate}
+                  linedata={myStats.timeRangeWinrate}
+                  bardata={myStats.totalranges}
                   rangearr={myStats.timeRanges} 
                 />
               </div>
@@ -2111,11 +2188,6 @@ export default class MatchStats extends Component {
             <div className="row">
               <div className="col-md">
                 {createQuitoutBarChartCharacterUsage(myStats.quitoutPercent, 'Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md">
-                {createQuitoutBarChartCharacterUsage(myStats.quitoutOppPercent, 'Opponent Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
               </div>
             </div>
             <div className="row">
@@ -2144,6 +2216,102 @@ export default class MatchStats extends Component {
                   title = 'Deaths Direction'
                   labels = {['Down', 'Left', 'Right', 'Up']}
                 />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createSuccessWhiffBarChart(
+                  myStats.grabCountSuccessCharUsage,
+                  myStats.grabCountWhiffCharUsage,
+                  'Player Grab Whiff %',
+                  'Success',
+                  'Whiffed')}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createSuccessWhiffBarChart(
+                  myStats.grabCountSuccessOppCharUsage,
+                  myStats.grabCountWhiffOppCharUsage,
+                  'Opponent Grab Whiff %',
+                  'Success',
+                  'Whiffed')}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+              <label>
+                Opponent Data:
+                <input
+                  name="check"            
+                  type="checkbox"
+                  checked={this.state.check}
+                  onChange={this.handleCheckChange} />
+              </label>
+                <FourStatBarChart
+                  dataset = {fourStatBarChartComponent(
+                    myStats.charUsage,
+                    myStats.throwCountCharUsage,
+                    myStats.oppCharUsage,
+                    myStats.throwCountOppCharUsage,
+                    this.state.check
+                      )}
+                  title = 'Throws Direction'
+                  labels = {['Up', 'Forward', 'Back', 'Down']}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+              <label>
+                Opponent Data:
+                <input
+                  name="check"            
+                  type="checkbox"
+                  checked={this.state.check}
+                  onChange={this.handleCheckChange} />
+              </label>
+                <FourStatBarChart
+                  dataset = {fourStatBarChartComponent(
+                    myStats.charUsage,
+                    myStats.groundTechCountCharUsage,
+                    myStats.oppCharUsage,
+                    myStats.groundTechCountOppCharUsage,
+                    this.state.check
+                      )}
+                  title = 'Tech Direction'
+                  labels = {['Backward', 'Forward', 'Neutral', 'Missed']}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createSuccessWhiffBarChart(
+                  myStats.wallTechCountSuccessCharUsage,
+                  myStats.wallTechCountFailCharUsage,
+                  'Wall Tech %',
+                  'Success',
+                  'Missed')}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createSuccessWhiffBarChart(
+                  myStats.wallTechCountSuccessOppCharUsage,
+                  myStats.wallTechCountFailOppCharUsage,
+                  'Opponent Wall Tech %',
+                  'Success',
+                  'Missed')}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createSuccessWhiffBarChart(
+                  myStats.sdCharUsage,
+                  myStats.deathUsage,
+                  'SD %',
+                  'SD',
+                  'Regular Death')}
               </div>
             </div>
           </div>
