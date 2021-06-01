@@ -206,29 +206,7 @@ function parse_slp(filename, arr){
 
         }
     }
-  
-    // function l_cancel_percentage(player_index){
-    
-    //   var failed = 0;
-    //   var successful = 0;
-  
-    //   for (let i = 0; i < stats.lastFrame; i++) {
-    //       for (let j = 0; j < frames[i].players.length; j++) {
-    //           if(frames[i].players[j].post.lCancelStatus == 1){
-    //               if(frames[i].players[j].post.playerIndex == player_index){
-    //                   ++successful;
-    //               }
-    //           }else if(frames[i].players[j].post.lCancelStatus == 2){
-    //               if(frames[i].players[j].post.playerIndex == player_index){
-    //                   ++failed;
-    //               }
-    //           }
-    //       }
-    //   }
-  
-    //   var l_cancel_percentage = (successful / (successful + failed)) * 100;
-    //   return Math.round(l_cancel_percentage);
-    // }
+
 
     var myobj = {
       matchid: metadata.startAt + metadata.players[0].names.code + metadata.players[1].names.code,
@@ -440,6 +418,7 @@ exports.create = (req, res) => {
     }
     //To parse PUBLIC folder and empty it
     parse_folder(R_DIR, res); 
+    
     rimraf.sync(R_DIR);
   });
 
@@ -497,16 +476,18 @@ exports.findAll = (req, res) => {
 
   let enddate = req.query.end ? new Date(req.query.end): new Date();
 
+  
+
   Match.find({
     'players.code':{ $all: playerArr },
-    'players' : {$all: [{ $elemMatch : {code: mycode, characterString: {$in : characters} }},
-      { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }}]},
-    'settings.stageString' : {$in: stages},
-    'metadata.gameComplete': {$in: complete},
-    'metadata.startAt' : {
-      $gte: startdate,
-      $lte: enddate
-    }
+    // 'players' : {$all: [{ $elemMatch : {code: mycode, characterString: {$in : characters} }},
+    //   { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }}]},
+    // 'settings.stageString' : {$in: stages},
+    // 'metadata.gameComplete': {$in: complete},
+    // 'metadata.startAt' : {
+    //   $gte: startdate,
+    //   $lte: enddate
+    // }
   })
     .then(data => {
       res.send(data);

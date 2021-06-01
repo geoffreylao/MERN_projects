@@ -1724,8 +1724,6 @@ function createSuccessWhiffBarChart(success, whiff, title, successLabel, whiffLa
     borderWidth: 1.5
   })
 
-  console.log(charImage)
-
   return <SuccessWhiffBarChart 
             labels = {charLabels}
             charImage = {charImage}

@@ -58,7 +58,7 @@ export default class VerticalBarChart extends Component {
               ],
               xAxes: [
                 {
-                  barThickness: 45,
+                  //barThickness: 45,
                   //barPercentage: 1.0,
                   gridlines: {
                     display: false
