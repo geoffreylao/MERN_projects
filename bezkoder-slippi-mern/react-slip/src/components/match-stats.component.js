@@ -425,7 +425,7 @@ function getStats(connect_code, res){
       }
   
       // Total L R A Start
-      if(res[i].metadata.gameComplete === false){
+      if(res[i].metadata.winner === "INCOMPLETE"){
         myTotalLRAStart++;
         for (let j = 0; j < res[i].players.length; j++) {
           if(res[i].players[j].code === connect_code){
@@ -445,8 +445,9 @@ function getStats(connect_code, res){
       }
   
       // Total Timeouts
-      if(res[i].metadata.lastframe === 28800){
+      if(res[i].metadata.lastFrame === 28800){
         myTotalTimeouts++;
+        console.log(myTotalTimeouts);
       }
   
       // Total Wins/Loss, Stage W/L
@@ -890,8 +891,6 @@ function getStats(connect_code, res){
     quitoutmyCharUsagePercent[i] = quitoutmyCharUsage[i] / myCharUsage[i] ? parseInt((quitoutmyCharUsage[i] / myCharUsage[i])*100) : 0;
     quitoutmyOppCharUsagePercent[i] = quitoutmyOppCharUsage[i] / myOppCharUsage[i] ? parseInt((quitoutmyOppCharUsage[i] / myOppCharUsage[i]) * 100) : 0;
   }
-
-  console.log(deathUsage)
 
   var resObj = {
     // Summary

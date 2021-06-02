@@ -133,30 +133,6 @@ function parse_slp(filename, arr){
       25 : "GANONDORF"
     }
 
-    function check_complete(stats){
-      var player0_stocks_lost = 0;
-      var player1_stocks_lost = 0;
-
-      for (let i = 0; i < stats.stocks.length; i++) {
-          switch(stats.stocks[i].playerIndex){
-              case 0:
-                  player0_stocks_lost++;
-                  break;
-              case 1:
-                  player1_stocks_lost++;
-                  break;
-          }      
-      }
-
-
-
-      if(player0_stocks_lost != 4 && player1_stocks_lost != 4 && stats.lastFrame != 28800){
-          return false;
-      }else{
-          return true;
-      }
-    }
-
     function check_winner(stats){
 
         var player_zero_percent;
@@ -166,9 +142,9 @@ function parse_slp(filename, arr){
         // set last stocks final percent
         for (let i = 0; i < stats.stocks.length; i++) {
             if(stats.stocks[i].playerIndex == 0){
-                player_zero_percent == stats.stocks[i].currentPercent;
+                player_zero_percent = stats.stocks[i].currentPercent;
             }else if(stats.stocks[i].playerIndex == 1){
-                player_one_percent == stats.stocks[i].currentPercent;
+                player_one_percent = stats.stocks[i].currentPercent;
             }
         }
 
@@ -181,12 +157,12 @@ function parse_slp(filename, arr){
                 winner =  0;
             }else if(p0Kills < p1Kills){
                 winner =  1;
-            }else if(p0Kills == p1Kills){
+            }else if(p0Kills === p1Kills){
                 if(player_zero_percent > player_one_percent){
                     winner = 1;
                 }else if(player_zero_percent < player_one_percent){
                     winner = 0;
-                }else if(player_zero_percent = player_one_percent){
+                }else if(player_zero_percent == player_one_percent){
                     winner = 2;
                 }
             }
@@ -220,7 +196,7 @@ function parse_slp(filename, arr){
         startAt: new Date(metadata.startAt),
         lastFrame: metadata.lastFrame,
         minutes: stats.overall[0].inputsPerMinute.total,
-        gameComplete: check_complete(stats),
+        gameComplete: check_winner(stats) === "INCOMPLETE" ? false : true,
         winner: check_winner(stats),
         firstBlood: metadata.players[stats.stocks[0].playerIndex].names.code
       }, 
@@ -480,15 +456,15 @@ exports.findAll = (req, res) => {
 
   Match.find({
     'players.code':{ $all: playerArr },
-    // 'players' : {$all: [{ $elemMatch : {code: mycode, characterString: {$in : characters} }},
-    //   { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }}]},
-    // 'settings.stageString' : {$in: stages},
-    // 'metadata.gameComplete': {$in: complete},
-    // 'metadata.startAt' : {
-    //   $gte: startdate,
-    //   $lte: enddate
-    // }
-  })
+    'players' : {$all: [{ $elemMatch : {code: mycode, characterString: {$in : characters} }},
+      { $elemMatch : {code: {$ne: mycode}, characterString: {$in : oppcharacters } }}]},
+    'settings.stageString' : {$in: stages},
+    'metadata.gameComplete': {$in: complete},
+    'metadata.startAt' : {
+      $gte: startdate,
+      $lte: enddate
+    }
+  }).lean().map(function(u) {return u})
     .then(data => {
       res.send(data);
     })
