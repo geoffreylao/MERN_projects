@@ -31,6 +31,9 @@ module.exports = mongoose => {
         minutes: {
           type: Number
         },
+        gameComplete: {
+          type: Boolean
+        },
         winner: {
           type: String
         },
