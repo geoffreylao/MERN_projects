@@ -1160,10 +1160,19 @@ exports.create = (req, res) => {
       console.log(`Upload of '${filename}' started`);
 
       // Create a write stream of the new file
+      
       const fstream = fs.createWriteStream(path.join(R_DIR, filename));
       // Pipe it trough
       file.pipe(fstream);
 
+      fstream.on('end', () => {
+        console.log('fstream end for: %s ', filename);
+      });
+
+      file.on('data', function(chunk) {
+        console.log('fstream data for %s ', filename)
+      });
+ 
       // On finish of the upload
       fstream.on('close', () => {
           console.log(`Upload of '${filename}' finished`);
