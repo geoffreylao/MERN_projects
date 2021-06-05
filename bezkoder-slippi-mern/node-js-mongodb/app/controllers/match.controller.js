@@ -1155,8 +1155,10 @@ exports.create = (req, res) => {
 
   req.pipe(req.busboy); // Pipe it trough busboy
 
+  var counter = 0;
+
   req.busboy.on('file', (fieldname, file, filename) => {
-    try {
+      counter++;
       console.log(`Upload started: %s`, filename);
 
       // Create a write stream of the new file
@@ -1175,13 +1177,21 @@ exports.create = (req, res) => {
        fstream.end();
        console.log('Finished uploading: %s', filename );
       });
-    } catch (error) {
-      console.log(error)
 
-      req.busboy.on('error', (err) => {
-        console.log(err)
-      })
-    }
+      // file.on('finish', function() {
+      //   next();
+      //   console.log('finish')
+      //   fs.readdir(R_DIR, (err, files) => {
+      //     console.log(files.length);
+      //   });        
+      // });   
+  }); // busboy on file
+
+  req.busboy.on('finish', function() {
+    console.log('finish')
+    fs.readdir(R_DIR, (err, files) => {
+      console.log(files.length);
+    });  
   });
 }
 
