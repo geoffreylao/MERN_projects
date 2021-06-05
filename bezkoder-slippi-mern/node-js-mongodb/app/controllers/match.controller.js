@@ -1157,31 +1157,24 @@ exports.create = (req, res) => {
 
   req.busboy.on('file', (fieldname, file, filename) => {
     try {
-      console.log(`Upload of '${filename}' started`);
+      console.log(`Upload started: %s`, filename);
 
       // Create a write stream of the new file
-      
       const fstream = fs.createWriteStream(path.join(R_DIR, filename));
+      
       // Pipe it trough
-      file.pipe(fstream);
-
-      fstream.on('end', () => {
-        console.log('fstream end for: %s ', filename);
-      });
-
       file.on('data', function(chunk) {
-        console.log('fstream data for %s ', filename)
+        fstream.write(chunk);
       });
- 
-      // On finish of the upload
-      fstream.on('close', () => {
-          console.log(`Upload of '${filename}' finished`);
-          //res.redirect('back');
+      
+      file.on('error',function(err){
+       console.log('fstream: ', err);
       });
-
-      fstream.on('error', () => {
-        console.log(`error on  ${filename}`)
-      })
+      
+      file.on('end', function() {
+       fstream.end();
+       console.log('Finished uploading: %s', filename );
+      });
     } catch (error) {
       console.log(error)
 
