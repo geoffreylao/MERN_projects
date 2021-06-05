@@ -45,6 +45,8 @@ export default class AddMatch extends Component {
     for (const key of Object.keys(this.state.matchesCollection)) {
         formData.append('matchesCollection', this.state.matchesCollection[key])
     }
+    console.log(this.state.matchesCollection)
+
     MatchDataService.create(formData).then((res) => {
         console.log(res)
         document.getElementById("inserted").innerHTML = (res.data.inserted ? "Inserted: " + res.data.inserted : "");
@@ -61,9 +63,9 @@ export default class AddMatch extends Component {
     return (
         <div className="container">
             <div className="row">
-              <form onSubmit={this.onSubmit} enctype="multipart/form-data">
+              <form onSubmit={this.onSubmit} encType="multipart/form-data">
                 <div className="form-group">
-                    <input type="file" accept="application/x-zip-compressed,.slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />
+                    <input type="file" accept=".slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary" type="submit">Upload</button>

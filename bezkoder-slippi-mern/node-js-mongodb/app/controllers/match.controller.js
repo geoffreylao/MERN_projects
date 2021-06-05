@@ -1137,8 +1137,8 @@ function getStats(connect_code, res){
   return resObj
 }
 
-// Create and Save new matches
 exports.create = (req, res) => {
+
   // File storage location and naming
   var R_DIR = DIR + "/" + uuidv4();
   fs.mkdir(R_DIR, function(err){});
@@ -1153,36 +1153,82 @@ exports.create = (req, res) => {
     }
   });
 
-  let upload = multer({ storage: storage, fileFilter: slippiFilter }).array('matchesCollection');
+  req.pipe(req.busboy); // Pipe it trough busboy
 
-  upload(req, res, function(err) {
-    if (req.fileValidationError) {
-        return res.send(req.fileValidationError);
+  req.busboy.on('file', (fieldname, file, filename) => {
+    try {
+      console.log(`Upload of '${filename}' started`);
+
+      // Create a write stream of the new file
+      const fstream = fs.createWriteStream(path.join(R_DIR, filename));
+      // Pipe it trough
+      file.pipe(fstream);
+
+      // On finish of the upload
+      fstream.on('close', () => {
+          console.log(`Upload of '${filename}' finished`);
+          //res.redirect('back');
+      });
+
+      fstream.on('error', () => {
+        console.log(`error on  ${filename}`)
+      })
+    } catch (error) {
+      console.log(error)
+
+      req.busboy.on('error', (err) => {
+        console.log(err)
+      })
     }
-    for (let i = 0; i < req.files.length; i++) {
-      if(req.files[i].mimetype === 'application/x-zip-compressed'){
-        var zip = new AdmZip(req.files[i].path);
-
-        zip.extractAllTo(R_DIR);
-
-        try {
-          fs.unlinkSync(req.files[i].path)
-          //file removed
-        } catch(err) {
-          console.error(err)
-        }
-        
-      }
-      
-    }
-    //To parse PUBLIC folder and empty it
-    parse_folder(R_DIR, res); 
-    
-    rimraf.sync(R_DIR);
   });
+}
+
+// Create and Save new matches
+// exports.create = (req, res) => {
+//   // File storage location and naming
+//   var R_DIR = DIR + "/" + uuidv4();
+//   fs.mkdir(R_DIR, function(err){});
+
+//   const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, R_DIR);
+//     },
+//     filename: (req, file, cb) => {
+//         const fileName = file.originalname;
+//         cb(null,fileName)
+//     }
+//   });
+
+//   let upload = multer({ storage: storage, fileFilter: slippiFilter }).array('matchesCollection');
+
+//   upload(req, res, function(err) {
+//     if (req.fileValidationError) {
+//         return res.send(req.fileValidationError);
+//     }
+//     for (let i = 0; i < req.files.length; i++) {
+//       if(req.files[i].mimetype === 'application/x-zip-compressed'){
+//         var zip = new AdmZip(req.files[i].path);
+
+//         zip.extractAllTo(R_DIR);
+
+//         try {
+//           fs.unlinkSync(req.files[i].path)
+//           //file removed
+//         } catch(err) {
+//           console.error(err)
+//         }
+        
+//       }
+      
+//     }
+//     //To parse PUBLIC folder and empty it
+//     parse_folder(R_DIR, res); 
+    
+//     rimraf.sync(R_DIR);
+//   });
 
   
-};
+// };
 
 // Retrieve all matches from the database 
 exports.findAll = (req, res) => {

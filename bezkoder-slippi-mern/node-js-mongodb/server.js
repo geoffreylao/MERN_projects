@@ -1,8 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const busboy = require('connect-busboy');
 
 const app = express();
+
+app.use(busboy({
+  highWaterMark: 2 * 1024 * 1024
+}))
 
 var corsOptions = {
   origin: "http://localhost:3000"
