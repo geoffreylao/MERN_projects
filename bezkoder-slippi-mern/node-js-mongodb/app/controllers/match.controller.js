@@ -31,7 +31,6 @@ function splitFilename(str){
 function parse_slp(filename, arr){
   try {
     var game = new SlippiGame(filename);
-
     // Get game settings – stage, characters, etc
     var settings = game.getSettings();
     // Get metadata - start time, platform played on, etc
@@ -288,8 +287,10 @@ function parse_slp(filename, arr){
   
     arr.push(myobj);
   } catch (error) {
-    console.log("Error parsing: " + splitFilename(filename));
-    failed_inserts.push(splitFilename(filename));
+    console.log(game)
+    console.log(error)
+    console.log("Error parsing: " + (filename));
+    failed_inserts.push((filename));
   }
 }
 
@@ -297,7 +298,7 @@ function parse_folder(folder, res){
   fs.readdirSync(folder).forEach(file => {
     console.log("Parsing: " + file);
 
-    parse_slp(folder + "/" + file, obj_arr);
+    parse_slp(file, obj_arr);
     count++;
   });
 
@@ -1155,10 +1156,7 @@ exports.create = (req, res) => {
 
   req.pipe(req.busboy); // Pipe it trough busboy
 
-  var counter = 0;
-
   req.busboy.on('file', (fieldname, file, filename) => {
-      counter++;
       console.log(`Upload started: %s`, filename);
 
       // Create a write stream of the new file
@@ -1177,14 +1175,7 @@ exports.create = (req, res) => {
        fstream.end();
        console.log('Finished uploading: %s', filename );
       });
-
-      // file.on('finish', function() {
-      //   next();
-      //   console.log('finish')
-      //   fs.readdir(R_DIR, (err, files) => {
-      //     console.log(files.length);
-      //   });        
-      // });   
+ 
   }); // busboy on file
 
   req.busboy.on('finish', function() {
@@ -1192,6 +1183,9 @@ exports.create = (req, res) => {
     fs.readdir(R_DIR, (err, files) => {
       console.log(files.length);
     });  
+
+    parse_folder(R_DIR, res);  
+    //rimraf.sync(R_DIR);
   });
 }
 
