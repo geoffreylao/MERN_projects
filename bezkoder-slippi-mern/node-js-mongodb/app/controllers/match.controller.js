@@ -28,7 +28,17 @@ function splitFilename(str){
   return str.split('/')[2];
 }
 
-function parse_slp(filename, arr){
+function slpparse(file){  
+    var game = new SlippiGame(file);
+
+    // Get metadata - start time, platform played on, etc
+    var metadata = game.getMetadata();
+
+    console.log(metadata)
+  
+}
+
+function parse_slp(filename){
   try {
     var game = new SlippiGame(filename);
     // Get game settings – stage, characters, etc
@@ -285,9 +295,8 @@ function parse_slp(filename, arr){
       ],
     };
   
-    arr.push(myobj);
+    obj_arr.push(myobj);
   } catch (error) {
-    console.log(game)
     console.log(error)
     console.log("Error parsing: " + (filename));
     failed_inserts.push((filename));
@@ -298,7 +307,7 @@ function parse_folder(folder, res){
   fs.readdirSync(folder).forEach(file => {
     console.log("Parsing: " + file);
 
-    parse_slp(file, obj_arr);
+    parse_slp(folder + '/' + file, obj_arr);
     count++;
   });
 
@@ -1154,39 +1163,55 @@ exports.create = (req, res) => {
     }
   });
 
-  req.pipe(req.busboy); // Pipe it trough busboy
+
+
+  var files = 0, finished = false;
 
   req.busboy.on('file', (fieldname, file, filename) => {
       console.log(`Upload started: %s`, filename);
+      files++;
 
       // Create a write stream of the new file
       const fstream = fs.createWriteStream(path.join(R_DIR, filename));
       
       // Pipe it trough
-      file.on('data', function(chunk) {
-        fstream.write(chunk);
-      });
       
       file.on('error',function(err){
        console.log('fstream: ', err);
       });
-      
+            
       file.on('end', function() {
-       fstream.end();
-       console.log('Finished uploading: %s', filename );
+        fstream.end();
+        console.log('Finished uploading: %s', filename );
       });
- 
+
+      fstream.on('finish', function(){   
+        if(--files === 0 && finished){
+          
+          fs.readdir(R_DIR, (err, files) => {
+            console.log(files.length); 
+          });  
+
+          parse_folder(R_DIR, res); 
+          rimraf.sync(R_DIR);
+        }
+      });
+
+      fstream.on('close', function(){
+        if(files === 0 && finished){
+          console.log('fstream closed')
+        }
+      });
+
+      file.pipe(fstream)
+
   }); // busboy on file
 
   req.busboy.on('finish', function() {
-    console.log('finish')
-    fs.readdir(R_DIR, (err, files) => {
-      console.log(files.length);
-    });  
-
-    parse_folder(R_DIR, res);  
-    //rimraf.sync(R_DIR);
+    finished = true;
   });
+
+  return req.pipe(req.busboy); // Pipe it trough busboy
 }
 
 // Create and Save new matches

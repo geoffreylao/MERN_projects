@@ -137,7 +137,7 @@ var charhoverColorDict = {
 }
 
 var stageDict = {
-  2 : "Fountain Of Dreams.png",
+  2 : "Fountain.png",
   3 : "Pokemon Stadium.png",
   4 : "Peachs Castle.png",
   5 : "Kongo Jungle.png",
@@ -973,7 +973,7 @@ export default class MatchStats extends Component {
     ]
 
     let stagepng = [
-      "Fountain of Dreams.png","Pokemon Stadium.png","Yoshis Story.png","Dreamland.png",
+      "Fountain.png","Pokemon Stadium.png","Yoshis Story.png","Dreamland.png",
       "Battlefield.png","Final Destination.png"
     ]
 
@@ -1488,6 +1488,16 @@ export default class MatchStats extends Component {
                   myStats.sdCharUsage,
                   myStats.deathUsage,
                   'SD %',
+                  'SD',
+                  'Regular Death')}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md">
+                {createSuccessWhiffBarChart(
+                  myStats.sdOppCharUsage,
+                  myStats.deathOppUsage,
+                  'Opponent SD %',
                   'SD',
                   'Regular Death')}
               </div>
