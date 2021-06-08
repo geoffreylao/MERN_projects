@@ -479,6 +479,9 @@ function getStats(connect_code, res){
   var deathUsage = new Array(26).fill(0);
   var deathOppUsage = new Array(26).fill(0);
 
+  var zeroToDeaths = 0;
+  var oppZeroToDeaths = 0;
+  
   var frames = 0;
 
   for (let i = 0; i < res.length; i++) {
@@ -637,9 +640,13 @@ function getStats(connect_code, res){
             }
             
             if(res[i].players[j].conversions[k].didKill){
-              if(res[i].players[j].conversions[k].moves[0])
-                {myMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
+              if(res[i].players[j].conversions[k].moves[0]){
+                myMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;                
+              }
               
+              if(res[i].players[j].conversions[k].startPercent === 0){
+                zeroToDeaths++;
+              }
 
               if(res[i].players[j].conversions[k].endPercent > myHighestKill){
                 myHighestKill = res[i].players[j].conversions[k].endPercent;
@@ -761,8 +768,14 @@ function getStats(connect_code, res){
             }          
   
             if(res[i].players[j].conversions[k].didKill){
-              if(res[i].players[j].conversions[k].moves[0])
-              {myOppMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;}
+              if(res[i].players[j].conversions[k].moves[0]){
+                myOppMoveUsageArr.killMoves[res[i].players[j].characterId][res[i].players[j].conversions[k].moves[res[i].players[j].conversions[k].moves.length - 1].moveId]++;
+              }
+
+              if(res[i].players[j].conversions[k].startPercent === 0){
+                oppZeroToDeaths++;
+              }
+
               if(res[i].players[j].conversions[k].endPercent > myOppHighestKill){
                 myOppHighestKill = res[i].players[j].conversions[k].endPercent;
               }
@@ -1141,7 +1154,10 @@ function getStats(connect_code, res){
     deathOppUsage: deathOppUsage,
 
     main: myMostUsedCharId,
-    mainColor: myColorId
+    mainColor: myColorId,
+
+    zeroToDeaths: zeroToDeaths,
+    oppZeroToDeaths: oppZeroToDeaths
   }
 
   return resObj

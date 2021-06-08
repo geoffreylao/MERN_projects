@@ -1080,7 +1080,7 @@ export default class MatchStats extends Component {
           myStats: response.data
         });
         
-        //console.log(response.data);     
+        console.log(response.data);     
       })
       .catch(e => {
         this.setState({
@@ -1227,6 +1227,13 @@ export default class MatchStats extends Component {
                 <VerticalBarChart
                   label='Highest Damage Punish'
                   data={[myStats.bestPunish.toFixed(2) , myStats.oppBestPunish.toFixed(2)]}
+                  player={this.state.searchCode}
+                />
+              </div>
+              <div className="col-sm">
+                <VerticalBarChart
+                  label='0 to Deaths'
+                  data={[myStats.zeroToDeaths , myStats.oppZeroToDeaths]}
                   player={this.state.searchCode}
                 />
               </div>

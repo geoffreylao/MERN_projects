@@ -49,9 +49,9 @@ export default class AddMatch extends Component {
 
     MatchDataService.create(formData).then((res) => {
         console.log(res)
-        //document.getElementById("inserted").innerHTML = (res.data.inserted ? "Inserted: " + res.data.inserted : "");
-        //document.getElementById("failed").innerHTML = "Failed: " + res.data.failed_arr.length;
-        //document.getElementById("failedarr").appendChild(makeUL(res.data.failed_arr));
+        document.getElementById("inserted").innerHTML = (res.data.inserted ? "Inserted: " + res.data.inserted : "");
+        document.getElementById("failed").innerHTML = "Failed: " + res.data.failed_arr.length;
+        document.getElementById("failedarr").appendChild(makeUL(res.data.failed_arr));
     }, (error) => {
       console.log(error);
     });
