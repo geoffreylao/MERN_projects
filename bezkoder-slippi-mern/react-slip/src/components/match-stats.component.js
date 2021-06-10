@@ -19,6 +19,10 @@ import QuitoutBarChart from './charts/quitout-bar-chart.component';
 import FourStatBarChart from './charts/four-stat-bar-chart.component';
 import SuccessWhiffBarChart from './charts/success-whiff-bar-chart.component';
 
+import Form from 'react-bootstrap/Form'
+import { Card, Col } from 'react-bootstrap'
+import Container from 'react-bootstrap/Container'
+
 var charDict =
  {
   0 : "Captain Falcon.png",
@@ -1095,10 +1099,11 @@ export default class MatchStats extends Component {
     const renderStats = () => {
       if (statsLoaded === "loaded") {
         return(
-          <div className="containter-fluid">
+          <Container fluid>
+            <h2>Summary</h2>
             <div className="row">
-              <div className="col-sm">
-                <div id="container">
+              <div className="col-sm-3">
+                <div id="imgcontainer">
                     <img src="cssp1bg.png" width="272" height="376" alt=""/>
                     <img src={`char_portraits/${myStats.main}/${myStats.mainColor}.png`} width="272" height="376" alt=""/>
                     <img src="cssp1.png" width="272" height="376" alt=""/>
@@ -1107,19 +1112,21 @@ export default class MatchStats extends Component {
                     </p>
                 </div>
               </div>
-              <div className="col-sm">
-                <p>
-                  {myStats.totalMatches} games <br/>
-                  {myStats.totalTime} time played <br/>
-                  {myStats.totalLRAStart} L+R+A+Starts <br/>
-                  {myStats.totalTimeouts} Timeouts <br/>
+              <div className="col-sm-4">
+                <Card id='sumCard'>
+                  <p>
+                    {myStats.totalMatches} games <br/><br/>
+                    {myStats.totalTime} time played (h:m:s:f)<br/><br/>
+                    {myStats.totalLRAStart} L+R+A+Starts <br/><br/>
+                    {myStats.totalTimeouts} Timeouts <br/><br/>
 
-                  {myStats.uniqueOpps} Unique Opponents <br/>
-                  {myStats.oneAndDoned} One And Doned <br/>
-                </p>
+                    {myStats.uniqueOpps} Unique Opponents <br/><br/>
+                    {myStats.oneAndDoned} One And Doned <br/>
+                  </p>
+                </Card>
               </div>
               {/* WinRate Donut Chart */}
-              <div className="col-sm-6">
+              <div className="col-sm-5">
                 <Donut
                   labels={[myStats.totalLosses + ' Loss', myStats.totalWins + ' Wins']}
                   data={[myStats.totalLosses, myStats.totalWins]}
@@ -1129,24 +1136,39 @@ export default class MatchStats extends Component {
                 />
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
+            <h2>Character Usage</h2>
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-6" id='pie1'>
                 {createPieChartCharacterUsage(myStats.charUsage, 'Character Usage', this.state.charPieCheck)}
-                <label>
-                  Toggle label:
+                <label>                  
                   <input
                     name="charPieCheck"            
                     type="checkbox"
                     checked={this.state.charPieCheck}
                     onChange={this.handleCheckChange} />
                 </label>
+                &nbsp; Show labels
               </div>
-              <div className="col-md">
+              <div className="col-md-6" id='pie2'>
                 {createPieChartCharacterUsage(myStats.oppCharUsage, 'Opponent Character Usage', this.state.charPieCheck)}
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.charUsage, myStats.asCharWins, myStats.asCharLoss, 'Character Winrate %')}</div>              
+              <div className="col-md" id="bigbar">
+                {createBarChartCharacterWinrate(
+                  charDict,
+                  myStats.charUsage,
+                  myStats.asCharWins,
+                  myStats.asCharLoss,
+                  'Character Winrate %'
+                  )}
+              </div>              
             </div>
             <div className="row">
               <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.oppCharUsage, myStats.vsCharWins, myStats.vsCharLoss, 'VS Character Winrate %')}</div>
@@ -1509,7 +1531,7 @@ export default class MatchStats extends Component {
                   'Regular Death')}
               </div>
             </div>
-          </div>
+          </Container>
         )
       }
       else if (statsLoaded === "loading")
@@ -1525,77 +1547,105 @@ export default class MatchStats extends Component {
     return (
       <div className="list row">
         <div className="col-md-12">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Your Connect Code"
-              value={searchCode}
-              onChange={this.onChangeSearchCode}
-            />
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Your Opponents Code"
-              value={oppCode}
-              onChange={this.onChangeOppCode}
-            />
-            <div>
-              <Select 
-                menuPortalTarget={document.body} 
-                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
-                options={this.state.selectCharacters} 
-                onChange={this.myCharChange.bind(this)} 
-                isMulti 
-              />
-            </div>
-            <div>
-              <Select 
-                menuPortalTarget={document.body} 
-                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
-                options={this.state.selectCharacters} 
-                onChange={this.myOppChange.bind(this)} 
-                isMulti 
-              />
-            </div>
-            <div>
-              <Select 
-                menuPortalTarget={document.body} 
-                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
-                options={this.state.selectStages} 
-                onChange={this.stageChange.bind(this)} 
-                isMulti 
-              />
-            </div>
-            <label>
-              <input
-                name="isOnlyComplete"
-                type="checkbox"
-                value={this.state.isOnlyComplete}
-                onChange={this.handleCheckChange}
-              />
-                Exclude games ending in LRA Start
-            </label>
-            <div>
-            <DateRangePicker
-              startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-              startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-              endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-              endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
-              onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
-              focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-              onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
-              isOutsideRange={() => false}
-            />
-            </div>
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={this.searchCode}
-              >
-                Search
-              </button>
-            </div>
+          <Card>
+            <Card.Body>
+            <h2>Search Params</h2>
+            <Form>
+              <Form.Row>
+                <Col>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Your Connect Code"
+                    value={searchCode}
+                    onChange={this.onChangeSearchCode}
+                  />
+                </Col>
+                <Col>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Opponents Connect Code"
+                    value={oppCode}
+                    onChange={this.onChangeOppCode}
+                  />
+                </Col>
+              </Form.Row>
+              <Form.Row>
+                <Col>
+                  <Select 
+                    menuPortalTarget={document.body} 
+                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
+                    options={this.state.selectCharacters} 
+                    onChange={this.myCharChange.bind(this)} 
+                    placeholder = "Your Characters"
+                    isMulti 
+                  />
+                </Col>
+                <Col>
+                  <Select 
+                    menuPortalTarget={document.body} 
+                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
+                    options={this.state.selectCharacters} 
+                    onChange={this.myOppChange.bind(this)} 
+                    placeholder = "Opponents Characters"
+                    isMulti 
+                  />
+                </Col>
+              </Form.Row>
+              <Form.Row>
+                <Col md={6}>
+                  <Select 
+                    menuPortalTarget={document.body} 
+                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}} 
+                    options={this.state.selectStages} 
+                    onChange={this.stageChange.bind(this)} 
+                    placeholder = "Stages"
+                    isMulti 
+                  />
+                </Col>
+                <Col>
+                  <DateRangePicker
+                    startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                    startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+                    endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                    endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+                    onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+                    focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                    onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+                    isOutsideRange={() => false}
+                    small={true}
+                  />
+                </Col>
+                <Col>
+                <label>
+                  <input
+                    name="isOnlyComplete"
+                    type="checkbox"
+                    value={this.state.isOnlyComplete}
+                    onChange={this.handleCheckChange}
+                  />
+                    &nbsp; Exclude games ending in LRA-Start
+                </label>
+                </Col>
+              </Form.Row>
+              <Form.Row>
+                <Col>
+                  <div className="col text-center">
+                    <button
+                      className="btn btn-outline-secondary"
+                      type="button"
+                      onClick={this.searchCode}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </Col>
+              </Form.Row>
+            </Form>
+            </Card.Body>
+          </Card>
+          <hr class="my-4"></hr>
         </div>
         <div className="col-md-12">
           {renderStats()}

@@ -37,14 +37,13 @@ export default class CharBarChart extends Component {
               },
             ],
           }}
-          height={'260%'}
+          height={'250%'}
           options={{            
             layout: {
               padding: {
                 left: 20,
-                right: 160,
                 bottom: 40,
-                top: 40
+                
               }
 
             },
@@ -64,10 +63,6 @@ export default class CharBarChart extends Component {
                 }
               }],
             },
-            tooltips: {
-              xAlign:  'left',
-              yAlign: 'center'
-            }, 
             title: {
               display: true,
               text: this.props.title,
