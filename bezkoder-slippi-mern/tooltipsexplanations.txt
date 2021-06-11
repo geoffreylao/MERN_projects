@@ -53,7 +53,7 @@ Simple and interactable charts for analyzing your {Slippi Online} games
 
 This Website is inspired by {Slippi Stats Online} and {Slippi Stats Web} if you like what you see here please give them some love!
 
-Power by Chart.js + React + Slippi-js
+Powered by Chart.js + React + Slippi-js
 
 {Source Code}
 
@@ -64,9 +64,9 @@ How To Use
 2. I recommended to '.zip' your files to shorten your upload time considerably. Right click your containing folder and under the 'Send To' option, click 'Compressed (zipped) folder'
 or use your favorite archiver.
 
-3. Click on 'Browse...' and select your .slp files or your .zip file and click the upload buttons
+3. Click on 'Browse...' and select your .slp files and click the upload button
 
-4. Your files will begin to upload. Please leave the page open until the upload completes
+4. Your files will begin to upload. Please leave the page open until the upload completes and avoid uploading again until the first upload finishes
 
 5. Once the upload is complete you can now generate your charts. Click on the 'Generate Charts' button at the top of the page to be directed to the charts page
 

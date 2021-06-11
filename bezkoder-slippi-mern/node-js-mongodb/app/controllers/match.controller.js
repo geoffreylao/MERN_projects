@@ -28,16 +28,6 @@ function splitFilename(str){
   return str.split('/')[2];
 }
 
-function slpparse(file){  
-    var game = new SlippiGame(file);
-
-    // Get metadata - start time, platform played on, etc
-    var metadata = game.getMetadata();
-
-    console.log(metadata)
-  
-}
-
 function parse_slp(filename){
   try {
     var game = new SlippiGame(filename);
@@ -1230,53 +1220,6 @@ exports.create = (req, res) => {
   return req.pipe(req.busboy); // Pipe it trough busboy
 }
 
-// Create and Save new matches
-// exports.create = (req, res) => {
-//   // File storage location and naming
-//   var R_DIR = DIR + "/" + uuidv4();
-//   fs.mkdir(R_DIR, function(err){});
-
-//   const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, R_DIR);
-//     },
-//     filename: (req, file, cb) => {
-//         const fileName = file.originalname;
-//         cb(null,fileName)
-//     }
-//   });
-
-//   let upload = multer({ storage: storage, fileFilter: slippiFilter }).array('matchesCollection');
-
-//   upload(req, res, function(err) {
-//     if (req.fileValidationError) {
-//         return res.send(req.fileValidationError);
-//     }
-//     for (let i = 0; i < req.files.length; i++) {
-//       if(req.files[i].mimetype === 'application/x-zip-compressed'){
-//         var zip = new AdmZip(req.files[i].path);
-
-//         zip.extractAllTo(R_DIR);
-
-//         try {
-//           fs.unlinkSync(req.files[i].path)
-//           //file removed
-//         } catch(err) {
-//           console.error(err)
-//         }
-        
-//       }
-      
-//     }
-//     //To parse PUBLIC folder and empty it
-//     parse_folder(R_DIR, res); 
-    
-//     rimraf.sync(R_DIR);
-//   });
-
-  
-// };
-
 // Retrieve all matches from the database 
 exports.findAll = (req, res) => {
   let playerArr = [];
@@ -1352,20 +1295,14 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findAllComplete = (req, res) => {
-  const code = req.query.code;
-  var condition = code ? { 'players.code': { $regex: new RegExp(code), $options: "i" } } : {};
-
-  Match.find({condition, 'metadata.gameComplete' : true})
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving matches."
-      });
-    });
-
-    //http://localhost:8080/api/matches?code=CAVE#773/complete syntax
+exports.getTotal = (req, res) => {
+  Match.aggregate([
+    [
+      {
+        '$count': 'matchId'
+      }
+    ]
+  ]).then(data => {
+    res.send(data)
+  })
 }

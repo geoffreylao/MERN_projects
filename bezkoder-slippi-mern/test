@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MatchDataService from "../services/match.service";
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
+import ReactSpinner from 'react-bootstrap-spinner'
 
 function makeUL(array){
   // Create the list element:
@@ -29,25 +30,19 @@ export default class AddMatch extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      matchesCollection: '',
-      gamesTotal: 0
+      matchesCollection: ''
     }
 }
-
-  componentDidMount(){
-    MatchDataService.getAll().then(response => {
-      this.setState({
-        gamesTotal: response.data[0]
-      })
-      console.log(response.data)
-    })
-  }
 
   onFileChange(e) {
       this.setState({ matchesCollection: e.target.files })
   }
 
   onSubmit(e) {
+    this.setState({
+      filesLoaded: 'loading'
+    })
+
     document.getElementById("failedarr").innerHTML = "";
     e.preventDefault()
 
@@ -58,10 +53,13 @@ export default class AddMatch extends Component {
     console.log(this.state.matchesCollection)
 
     MatchDataService.create(formData).then((res) => {
+      this.setState({
+        filesLoaded: 'loaded'
+      })
         console.log(res)
         document.getElementById("inserted").innerHTML = (res.data.inserted ? "Inserted: " + res.data.inserted : "");
         document.getElementById("failed").innerHTML = "Failed: " + res.data.failed_arr.length;
-        document.getElementById("failedarr").appendChild(makeUL(res.data.failed_arr));
+        document.getElementById("failedarr").appendChild(makeUL(res.data.failed_arr));        
     }, (error) => {
       console.log(error);
     });
@@ -70,11 +68,36 @@ export default class AddMatch extends Component {
   }
 
   render() {
+    const {filesLoaded} = this.state;
+
+    const renderFiles = () => {
+      if(filesLoaded === 'loaded'){
+        <div id ="my_accordion">
+          <Accordion defaultActiveKey="1">
+            <Card.Header>
+              <h3 id="inserted"> </h3>
+            </Card.Header>
+            <Card>
+              <Accordion.Toggle as={Card.Header} eventKey="0">
+                <h3 id="failed"> </h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="0">
+                <Card.Body><div id="failedarr"> </div></Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          </Accordion>
+        </div>
+      }else if(filesLoaded === 'loading'){
+        return(
+            <div>
+              <div><ReactSpinner type="border" color="primary" size="5" /></div>
+            </div>
+        )
+      }
+    }
+
     return (
         <div className="container">
-          <div>
-            <h1>{this.state.gamesTotal.matchId} Matches Uploaded!</h1>
-          </div>
             <div className="row">
               <form onSubmit={this.onSubmit} encType="multipart/form-data">
                 <div className="form-group">
@@ -84,23 +107,8 @@ export default class AddMatch extends Component {
                     <button className="btn btn-primary" type="submit">Upload</button>
                 </div>
                 <div>
-                  <div id ="my_accordion">
-                    <Accordion defaultActiveKey="1">
-                      <Card.Header>
-                        <h3 id="inserted"> </h3>
-                      </Card.Header>
-                      <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="0">
-                          <h3 id="failed"> </h3>
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="0">
-                          <Card.Body><div id="failedarr"> </div></Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                    </Accordion>
-                  </div>
-                  {/* <h2 id="failed"> </h2>
-                  <div id="failedarr"> </div> */}
+                  {renderFiles()}
+
                 </div>
               </form>
             </div>

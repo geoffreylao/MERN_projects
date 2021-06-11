@@ -9,8 +9,8 @@ module.exports = app => {
   // Retrieve all Matches
   router.get("/", matches.findAll);
 
-  // Retrieve all complete Matches
-  router.get("/complete", matches.findAllComplete);
+  // Retrieve all Matches
+  router.get("/all", matches.getTotal);
 
   app.use('/api/matches', router);
 }

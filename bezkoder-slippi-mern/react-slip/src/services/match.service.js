@@ -2,7 +2,7 @@ import http from "../http-common";
 
 class MatchDataService{
   getAll() {
-    return http.get("/matches");
+    return http.get("/matches/all");
   }
 
   create(data) {
