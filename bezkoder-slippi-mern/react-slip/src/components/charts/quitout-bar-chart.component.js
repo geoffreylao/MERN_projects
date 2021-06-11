@@ -29,8 +29,7 @@ export default class QuitoutBarChart extends Component {
               }
             ]
           }}
-          width={'100%'}
-          height={'500%'}
+          height={'400%'}
           options={{   
             responsive: true,
             maintainAspectRatio: false,
@@ -39,7 +38,7 @@ export default class QuitoutBarChart extends Component {
               text: this.props.title,
               fontSize: 20,
               position: 'top',
-              padding: 50
+              
             },
             legend: {
               display: false,

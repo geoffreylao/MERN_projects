@@ -19,8 +19,7 @@ export default class VerticalBarChart extends Component {
               }
             ]
           }}
-          width={'100%'}
-          height={'300%'}
+          height={'360%'}
           options={{   
             responsive: true,
             maintainAspectRatio: false,

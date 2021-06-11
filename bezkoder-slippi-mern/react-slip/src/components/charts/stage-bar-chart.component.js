@@ -41,10 +41,7 @@ export default class StageBarChart extends Component {
           options={{            
             layout: {
               padding: {
-                right: 180,
                 left: 120,
-                top: 50,
-                bottom: 50
               }
             },
             scales: {
@@ -62,10 +59,6 @@ export default class StageBarChart extends Component {
                   
                 }
               }],
-            },
-            tooltips: {
-              xAlign:  'left',
-              yAlign: 'center'
             }, 
             title: {
               display: true,

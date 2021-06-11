@@ -36,7 +36,7 @@ export default class Donut extends Component {
               }
             ]
           }}
-          height={'260%'}
+          height={'350%'}
           options={{
             responsive:true,
             tooltips: {

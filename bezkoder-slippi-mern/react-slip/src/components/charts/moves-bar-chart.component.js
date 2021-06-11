@@ -22,7 +22,7 @@ export default class MovesBarChart extends Component {
                   'Side-B', 'Up-B', 'Down-B', 'Get-up Attack', 'Grab', 'Ledge Get-up Attack'],
           datasets: this.props.dataset,
           }}
-        height={'250%'}
+        height={'215%'}
          options = {{
            title:{
              display: true,

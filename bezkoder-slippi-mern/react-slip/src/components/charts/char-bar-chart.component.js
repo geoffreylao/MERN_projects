@@ -41,9 +41,7 @@ export default class CharBarChart extends Component {
           options={{            
             layout: {
               padding: {
-                left: 20,
-                bottom: 40,
-                
+                left: 20,              
               }
 
             },
@@ -57,6 +55,7 @@ export default class CharBarChart extends Component {
               xAxes: [{
                 ticks: {
                   beginAtZero: true,
+                  max: 100
                 },
                 gridLines: {
                   

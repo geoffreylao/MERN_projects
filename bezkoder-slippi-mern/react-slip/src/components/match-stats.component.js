@@ -1102,7 +1102,7 @@ export default class MatchStats extends Component {
           <Container fluid>
             <h2>Summary</h2>
             <div className="row">
-              <div className="col-sm-3">
+              <div className="col-sm-4">
                 <div id="imgcontainer">
                     <img src="cssp1bg.png" width="272" height="376" alt=""/>
                     <img src={`char_portraits/${myStats.main}/${myStats.mainColor}.png`} width="272" height="376" alt=""/>
@@ -1126,7 +1126,7 @@ export default class MatchStats extends Component {
                 </Card>
               </div>
               {/* WinRate Donut Chart */}
-              <div className="col-sm-5">
+              <div className="col-sm-4">
                 <Donut
                   labels={[myStats.totalLosses + ' Loss', myStats.totalWins + ' Wins']}
                   data={[myStats.totalLosses, myStats.totalWins]}
@@ -1170,14 +1170,38 @@ export default class MatchStats extends Component {
                   )}
               </div>              
             </div>
+
+            <hr class="my-4"></hr>
+
+
             <div className="row">
-              <div className="col-md" id="bigbar">{createBarChartCharacterWinrate(charDict, myStats.oppCharUsage, myStats.vsCharWins, myStats.vsCharLoss, 'VS Character Winrate %')}</div>
+              <div className="col-md" id="bigbar">
+                {createBarChartCharacterWinrate(
+                  charDict, 
+                  myStats.oppCharUsage, 
+                  myStats.vsCharWins, 
+                  myStats.vsCharLoss, 
+                  'VS Character Winrate %')}
+                </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md" id="bigbar">{createBarChartStageWinrate(stageDict, myStats.stageWins, myStats.stageLoss, 'Stage Winrate %')}</div>
+              <div className="col-md" id="bigbar">
+                {createBarChartStageWinrate(
+                  stageDict, 
+                  myStats.stageWins, 
+                  myStats.stageLoss, 
+                  'Stage Winrate %')}
+              </div>
             </div>
+
+            <hr class="my-4"></hr>
+
+            <h2>Openings</h2>
             <div className="row">
-              <div className="col-sm">
+              <div className="col-sm-3" id='donut-sm-3'>
                 <Donut
                   labels={[myStats.oppNeutralWins, myStats.neutralWins ]}
                   data={[myStats.oppNeutralWins, myStats.neutralWins ]}
@@ -1186,7 +1210,7 @@ export default class MatchStats extends Component {
                   player={this.state.searchCode}
                 />
               </div>   
-              <div className="col-sm">
+              <div className="col-sm-3" id='donut-sm-3'>
                 <Donut
                   labels={[myStats.oppCounterHits, myStats.counterHits, ]}
                   data={[myStats.oppCounterHits, myStats.counterHits]}
@@ -1195,7 +1219,7 @@ export default class MatchStats extends Component {
                   player={this.state.searchCode}
                 />
               </div>    
-              <div className="col-sm">
+              <div className="col-sm-3" id='donut-sm-3'>
                 <Donut
                   labels={[myStats.oppBeneficialTrades , myStats.beneficialTrades ]}
                   data={[ myStats.oppBeneficialTrades, myStats.beneficialTrades]}
@@ -1204,7 +1228,7 @@ export default class MatchStats extends Component {
                   player={this.state.searchCode}
                 />
               </div>  
-              <div className="col-sm">
+              <div className="col-sm-3" id='donut-sm-3'>
                 <Donut
                   labels={[myStats.oppFirstBloods, myStats.firstBloods]}
                   data={[myStats.oppFirstBloods , myStats.firstBloods]}
@@ -1214,29 +1238,33 @@ export default class MatchStats extends Component {
                 />
               </div>         
             </div>
+
+            <hr class="my-4"></hr>
+
+            <h2>KOs and Damage</h2>
             <div className="row">
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='Average KO Percent'
                   data={[myStats.avgKOpercent , myStats.oppAvgKOpercent]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
-                  label='Openings Per KO'
+                  label='Openings Per KO' 
                   data={[myStats.openingsPerKO.toFixed(2) , myStats.oppOpeningsPerKO.toFixed(2)]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='Successful Conversion Percent'
                   data={[myStats.conversionRate , myStats.oppConversionRate]}
                   player={this.state.searchCode}
                 />
               </div>  
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='Average Damage Per Opening'
                   data={[myStats.avgDamagePerOpening , myStats.oppAvgDamagePerOpening]}
@@ -1245,28 +1273,28 @@ export default class MatchStats extends Component {
               </div>  
             </div>
             <div className="row">
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='Highest Damage Punish'
                   data={[myStats.bestPunish.toFixed(2) , myStats.oppBestPunish.toFixed(2)]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='0 to Deaths'
                   data={[myStats.zeroToDeaths , myStats.oppZeroToDeaths]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='Lowest % Kill'
                   data={[myStats.lowestKill.toFixed(2) , myStats.oppLowestKill.toFixed(2)]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-3">
                 <VerticalBarChart
                   label='Highest % Kill'
                   data={[myStats.highestKill.toFixed(2) , myStats.oppHighestKill.toFixed(2)]}
@@ -1274,22 +1302,26 @@ export default class MatchStats extends Component {
                 />
               </div>  
             </div>
+
+            <hr class="my-4"></hr>
+
+            <h2>Stocks</h2>
             <div className="row">
-              <div className="col-sm">
+              <div className="col-sm-4" id='twoBar'>
                 <VerticalBarChart
                   label='4 Stocks'
                   data={[myStats.fourStocks , myStats.oppFourStocks]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-4" id='twoBar'>
                 <VerticalBarChart
                   label='Average Stocks Taken'
                   data={[myStats.avgStocksTaken.toFixed(2) , myStats.oppAvgStocksTaken.toFixed(2)]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-4" id='twoBar'>
                 <VerticalBarChart
                   label='Average Stocks Won By'
                   data={[myStats.avgStockDifferential.toFixed(2) , myStats.oppAvgStockDifferential.toFixed(2)]}
@@ -1297,22 +1329,26 @@ export default class MatchStats extends Component {
                 />
               </div>  
             </div>
+
+            <hr class="my-4"></hr>
+                  
+            <h2>Inputs</h2>
             <div className="row">
-              <div className="col-sm">
+              <div className="col-sm-4" id='twoBar'>
                 <VerticalBarChart
                   label='Inputs Per Minute'
                   data={[myStats.inputsPM.toFixed(2) , myStats.oppIPM.toFixed(2)]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-4" id='twoBar'>
                 <VerticalBarChart
                   label='Digital IPM'
                   data={[myStats.digitalIPM.toFixed(2) , myStats.oppDigitalIPM.toFixed(2)]}
                   player={this.state.searchCode}
                 />
               </div>
-              <div className="col-sm">
+              <div className="col-sm-4" id='twoBar'>
                 <VerticalBarChart
                   label='Successful L Cancel %'
                   data={[myStats.lcancels , myStats.oppLcancels]}
@@ -1320,38 +1356,36 @@ export default class MatchStats extends Component {
                 />
               </div>  
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md" id="bigbar">
+              <div className="col-md-12" id="multibars">
+                <ActionsBarChart
+                  dataset = {actionsBarChartData(myStats.charUsage, myStats.actionCountArr, myStats.oppCharUsage, myStats.oppActionCountArr, this.state.actionCheck)}
+                />
                 <label>
-                  Toggle Opponent Data:
                   <input
                     name="actionCheck"            
                     type="checkbox"
                     checked={this.state.actionCheck}
                     onChange={this.handleCheckChange} />
+                  Toggle Opponent Data:
                 </label>
-                <ActionsBarChart
-                  dataset = {actionsBarChartData(myStats.charUsage, myStats.actionCountArr, myStats.oppCharUsage, myStats.oppActionCountArr, this.state.actionCheck)}
-                />
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
+            <h2>Move Usage</h2>
             <div className="row">
               <div className="col-md" id="bigbar">
-                <div onChange={this.handleInputChange}>
-                  <input type="radio" value="Neutral Wins" checked = {this.state.radio === 'Neutral Wins'} name="move" /> Neutral Wins
-                  <input type="radio" value="Counter Hits" checked = {this.state.radio === 'Counter Hits'} name="move" /> Counter Hits
-                  <input type="radio" value="Trades" checked = {this.state.radio === 'Trades'} name="move" /> Trades
-                  <input type="radio" value="Kill Moves" checked = {this.state.radio === 'Kill Moves'} name="move" /> Kill Moves
+                <div onChange={this.handleInputChange} id='radiobuttons'>
+                  <input type="radio" value="Neutral Wins" checked = {this.state.radio === 'Neutral Wins'} name="move" /> Neutral Wins &nbsp; 
+                  <input type="radio" value="Counter Hits" checked = {this.state.radio === 'Counter Hits'} name="move" /> Counter Hits &nbsp; 
+                  <input type="radio" value="Trades" checked = {this.state.radio === 'Trades'} name="move" /> Trades &nbsp; 
+                  <input type="radio" value="Kill Moves" checked = {this.state.radio === 'Kill Moves'} name="move" /> Kill Moves &nbsp; 
                 </div>
-                <label>
-                    Opponent Data:
-                    <input
-                      name="check"            
-                      type="checkbox"
-                      checked={this.state.check}
-                      onChange={this.handleCheckChange} />
-                  </label>
-
 
                 <MovesBarChart
                   dataset = {movesBarChartData(
@@ -1360,10 +1394,22 @@ export default class MatchStats extends Component {
                     this.state.check, this.state.radio)}
                   title = {this.state.radio}
                 />
+                <label>                  
+                  <input
+                    name="check"            
+                    type="checkbox"
+                    checked={this.state.check}
+                    onChange={this.handleCheckChange} />
+                  Toggle Opponent Data:
+                </label>
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
+            <h2>Rival</h2>
             <div className="row">
-              <div className="col-sm"> 
+              <div className="col-sm-4"> 
                 <div id="container2">
                   <img src="cssp2bg.png" width="272" height="376" alt=""/>
                   <img src={`char_portraits/${myStats.rivalsCharId}/${myStats.rivalsColorId}.png`} width="272" height="376" alt=""/>
@@ -1373,7 +1419,7 @@ export default class MatchStats extends Component {
                   </p>
                 </div>
               </div>
-              <div className="col-sm-6">
+              <div className="col-sm-4">
                 <Donut
                   labels={[myStats.vsRivalLoss + ' Loss', myStats.vsRivalWin + ' Wins']}
                   data={[myStats.vsRivalLoss, myStats.vsRivalWin]}
@@ -1382,9 +1428,20 @@ export default class MatchStats extends Component {
                   player={myStats.rival}
                 />
               </div>
+              <div className="col-sm-4">
+                <Card id='sumCard'>
+                  <h6>&nbsp;</h6>
+                  <p>
+                    Try entering your rival's code in Search Params to see head to head stats!
+                  </p>
+                </Card>
+              </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md" id="bigbar">
+              <div className="col-md-12" id="timebar">
                 <TimeLineChart 
                   linedata={myStats.timeRangeWinrate}
                   bardata={myStats.totalranges}
@@ -1392,26 +1449,27 @@ export default class MatchStats extends Component {
                 />
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-12">
                 {createQuitoutBarChartCharacterUsage(myStats.quitoutPercent, 'Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-12">
                 {createQuitoutBarChartCharacterUsage(myStats.quitoutOppPercent, 'Opponent Character % of Matches Ending in LRAStart', this.state.charPieCheck)}
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+            
             <div className="row">
-              <div className="col-md">
-              <label>
-                Opponent Data:
-                <input
-                  name="check"            
-                  type="checkbox"
-                  checked={this.state.check}
-                  onChange={this.handleCheckChange} />
-              </label>
+              <div className="col-md-12">
                 <FourStatBarChart
                   dataset = {fourStatBarChartComponent(
                     myStats.charUsage,
@@ -1424,37 +1482,20 @@ export default class MatchStats extends Component {
                   labels = {['Down', 'Left', 'Right', 'Up']}
                 />
               </div>
-            </div>
-            <div className="row">
-              <div className="col-md">
-                {createSuccessWhiffBarChart(
-                  myStats.grabCountSuccessCharUsage,
-                  myStats.grabCountWhiffCharUsage,
-                  'Player Grab Whiff %',
-                  'Success',
-                  'Whiffed')}
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md">
-                {createSuccessWhiffBarChart(
-                  myStats.grabCountSuccessOppCharUsage,
-                  myStats.grabCountWhiffOppCharUsage,
-                  'Opponent Grab Whiff %',
-                  'Success',
-                  'Whiffed')}
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md">
               <label>
-                Opponent Data:
+                Toggle Opponent Data:
                 <input
                   name="check"            
                   type="checkbox"
                   checked={this.state.check}
                   onChange={this.handleCheckChange} />
               </label>
+            </div>
+
+            <hr class="my-4"></hr>
+
+            <div className="row">
+              <div className="col-md-12">
                 <FourStatBarChart
                   dataset = {fourStatBarChartComponent(
                     myStats.charUsage,
@@ -1467,17 +1508,20 @@ export default class MatchStats extends Component {
                   labels = {['Up', 'Forward', 'Back', 'Down']}
                 />
               </div>
-            </div>
-            <div className="row">
-              <div className="col-md">
               <label>
-                Opponent Data:
+                Toggle Opponent Data:
                 <input
                   name="check"            
                   type="checkbox"
                   checked={this.state.check}
                   onChange={this.handleCheckChange} />
               </label>
+            </div>
+
+            <hr class="my-4"></hr>
+
+            <div className="row">
+              <div className="col-md-12">
                 <FourStatBarChart
                   dataset = {fourStatBarChartComponent(
                     myStats.charUsage,
@@ -1490,9 +1534,46 @@ export default class MatchStats extends Component {
                   labels = {['Backward', 'Forward', 'Neutral', 'Missed']}
                 />
               </div>
+              <label>
+                Toggle Opponent Data:
+                <input
+                  name="check"            
+                  type="checkbox"
+                  checked={this.state.check}
+                  onChange={this.handleCheckChange} />
+              </label>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-12" id='successWhiffBar'>
+                {createSuccessWhiffBarChart(
+                  myStats.grabCountSuccessCharUsage,
+                  myStats.grabCountWhiffCharUsage,
+                  'Player Grab Whiff %',
+                  'Success',
+                  'Whiffed')}
+              </div>
+            </div>
+
+            <hr class="my-4"></hr>
+
+            <div className="row">
+              <div className="col-md-12" id='successWhiffBar'>
+                {createSuccessWhiffBarChart(
+                  myStats.grabCountSuccessOppCharUsage,
+                  myStats.grabCountWhiffOppCharUsage,
+                  'Opponent Grab Whiff %',
+                  'Success',
+                  'Whiffed')}
+              </div>
+            </div>
+
+            <hr class="my-4"></hr>
+
+            <div className="row">
+              <div className="col-md-12" id='successWhiffBar'>
                 {createSuccessWhiffBarChart(
                   myStats.wallTechCountSuccessCharUsage,
                   myStats.wallTechCountFailCharUsage,
@@ -1501,8 +1582,11 @@ export default class MatchStats extends Component {
                   'Missed')}
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-12" id='successWhiffBar'>
                 {createSuccessWhiffBarChart(
                   myStats.wallTechCountSuccessOppCharUsage,
                   myStats.wallTechCountFailOppCharUsage,
@@ -1511,8 +1595,11 @@ export default class MatchStats extends Component {
                   'Missed')}
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-12" id='successWhiffBar'>
                 {createSuccessWhiffBarChart(
                   myStats.sdCharUsage,
                   myStats.deathUsage,
@@ -1521,8 +1608,11 @@ export default class MatchStats extends Component {
                   'Regular Death')}
               </div>
             </div>
+
+            <hr class="my-4"></hr>
+
             <div className="row">
-              <div className="col-md">
+              <div className="col-md-12" id='successWhiffBar'>
                 {createSuccessWhiffBarChart(
                   myStats.sdOppCharUsage,
                   myStats.deathOppUsage,
@@ -1571,7 +1661,7 @@ export default class MatchStats extends Component {
                   />
                 </Col>
               </Form.Row>
-              <Form.Row>
+              <Form.Row id='formRow'>
                 <Col>
                   <Select 
                     menuPortalTarget={document.body} 
@@ -1593,7 +1683,7 @@ export default class MatchStats extends Component {
                   />
                 </Col>
               </Form.Row>
-              <Form.Row>
+              <Form.Row id='formRow'>
                 <Col md={6}>
                   <Select 
                     menuPortalTarget={document.body} 

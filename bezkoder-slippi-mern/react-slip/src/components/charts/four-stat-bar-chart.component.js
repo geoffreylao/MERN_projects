@@ -20,7 +20,7 @@ export default class FourStatBarChart extends Component {
           labels: this.props.labels,
           datasets: this.props.dataset,
           }}
-          height={'240%'}
+          height={'230%'}
          options = {{
            title:{
              display: true,
@@ -29,10 +29,16 @@ export default class FourStatBarChart extends Component {
              position: 'top'
            },
           legend:{
-            position: 'left'
+            position: 'left',
+            labels: {
+              boxWidth: 14,
+            
+            }
           },
           layout:{
-            padding: 50
+            padding: {
+              left: 40
+            }
           },
           scales: {
             yAxes: [

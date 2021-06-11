@@ -60,7 +60,6 @@ h4 {
   top: 0;
   left: 0;
   scale: 100%;
-
 }
 
 #container2 img {
@@ -83,10 +82,27 @@ h4 {
   top: 270px;
 }
 
-.col-sm-4,.col-sm-3, .col-sm-5   {
+.col-sm-4, .col-sm-5 , .col-sm-6  {
   display: inline-block;
   text-align: center;
   height: 400px;
+}
+
+.col-sm-3{
+  display: inline-block;
+  text-align: center;
+  height: 400px;
+}
+
+#donut-sm-3{
+  display: inline-block;
+  text-align: center;
+  height: 300px;
+}
+
+#radiobuttons{
+  margin: auto;
+  width: 40%;
 }
 
 #pie1 {
@@ -109,11 +125,13 @@ h4 {
 }
 
 #bigbar {
-  border-style: solid;
-  border-color: black;
   display: inline-block;
   height: 920px;
-  width: 10px;
+}
+
+#multibars {
+  display: inline-block;
+  height: 800px;
 }
 
 h2 {
@@ -128,9 +146,36 @@ h2 {
   margin: 0 auto; /* Added */
   float: none; /* Added */
   margin-top: 40px; /* Added */
-  margin-left: 60px;
+  margin-left: 0px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
   color: #6B6B6B;
 }
 
+#formRow{
+  padding-top: 10px;
+}
+
+#twoBar{
+  display: inline-block;
+  text-align: center;
+  height: 350px;
+}
+
+#timebar{
+  display: inline-block;
+  text-align: center;
+  height: 550px;
+}
+
+#successWhiffBar{
+  display: inline-block;
+  text-align: center;
+  height: 400px;
+}
+
+#fourStat{
+  display: inline-block;
+  text-align: center;
+  height: 800px;
+}

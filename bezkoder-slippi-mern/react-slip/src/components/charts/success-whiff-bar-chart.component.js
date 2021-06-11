@@ -23,7 +23,7 @@ export default class SuccessWhiffBarChart extends Component {
           let image = new Image();
           image.src =  '/stock_icons/' + this.props.charImage[index]
 
-            ctx.drawImage(image,  x-14, yAxis.right+650 , image.width*.36, image.height*.36);
+            ctx.drawImage(image,  x-14, yAxis.left+315 , image.width*.36, image.height*.36);
 
           
         });  
@@ -37,7 +37,7 @@ export default class SuccessWhiffBarChart extends Component {
           labels: this.props.labels,
           datasets: this.props.dataset,
           }}
-          height={'250%'}
+          height={'120%'}
          options = {{
            title:{
              display: true,
@@ -46,11 +46,14 @@ export default class SuccessWhiffBarChart extends Component {
              position: 'top'
            },
           legend:{
-            position: 'left',
+            position: 'top',
             
           },
           layout:{
-            padding: 60
+            padding: {
+              left: 60,
+              bottom: 60
+            }
           },
           plugins: {
             labels: {
