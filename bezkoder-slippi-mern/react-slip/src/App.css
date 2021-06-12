@@ -179,3 +179,17 @@ h2 {
   text-align: center;
   height: 800px;
 }
+
+a {
+  color: #ff6666;
+  background-color: transparent;
+}
+
+a:hover {
+  color: #ff4d4d;
+  background-color: transparent;
+}
+
+#credits{
+  padding-top: 85px;
+}

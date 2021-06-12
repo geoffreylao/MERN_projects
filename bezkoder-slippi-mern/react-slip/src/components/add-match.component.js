@@ -72,37 +72,87 @@ export default class AddMatch extends Component {
   render() {
     return (
         <div className="container">
-          <div>
+          {/* <div>
             <h1>{this.state.gamesTotal.matchId} Matches Uploaded!</h1>
-          </div>
+          </div> */}
             <div className="row">
-              <form onSubmit={this.onSubmit} encType="multipart/form-data">
-                <div className="form-group">
-                    <input type="file" accept=".slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />
-                </div>
-                <div className="form-group">
-                    <button className="btn btn-primary" type="submit">Upload</button>
-                </div>
-                <div>
-                  <div id ="my_accordion">
-                    <Accordion defaultActiveKey="1">
-                      <Card.Header>
-                        <h3 id="inserted"> </h3>
-                      </Card.Header>
-                      <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey="0">
-                          <h3 id="failed"> </h3>
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="0">
-                          <Card.Body><div id="failedarr"> </div></Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                    </Accordion>
+            <div className='col-lg-6'>
+              <h3>About &nbsp; {this.state.gamesTotal.matchId} Matches Uploaded!</h3>
+
+              <p>
+              Simple and interactable charts for analyzing your <a href='https://slippi.gg/'>Slippi Online</a> games<br/><br/>
+
+              This Website is inspired by <a href='https://slippistats.online/'>Slippi Stats Online</a> by Scott Norton if you like what you see here please give them some love!<br/><br/>
+
+              Powered by Chart.js + Slippi-js<br/><br/>
+
+              Source Code 
+              </p>
+
+              <h3>How To Use</h3>
+
+              <p>
+                1. Find your Slippi Replay Root Directory. By default these are stored in the C:\Users\[username]\Documents\Slippi directory. <br/><br/>
+
+                2. Click on 'Browse...' and select your .slp files and click the upload button. (NOTE: this site does not support zip file uploads!)<br/><br/>
+
+                3. Your files will begin to upload. Please leave the page open until the upload completes and avoid uploading again until the first upload finishes<br/><br/>
+
+                4. Once the upload is complete you can now generate your charts. Click on the 'Generate Charts' button at the top of the page to be directed to the charts page<br/><br/>
+
+                5. On the charts page, you must at least enter your own connect code. This is the code you give to others when using direct connect on Slippi Online. <br/><br/>
+
+                6. Optionally, you may further filter your games by opponent, characters played as and/or against, stages played, complete games only, and only games played within a specified date ranges<br/><br/>
+              </p>
+            </div>
+              <div className='col-lg-6'>             
+                <div className='row'>
+                  <div className='col-lg-12'>
+                    <form onSubmit={this.onSubmit} encType="multipart/form-data">
+                      <div className="form-group">
+                          <input type="file" accept=".slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />
+                      </div>
+                      <div className="form-group">
+                          <button className="btn btn-primary" type="submit">Upload</button>
+                      </div>
+                      <div>
+                        <div id ="my_accordion">
+                          <Accordion defaultActiveKey="1">
+                            <Card.Header>
+                              <h3 id="inserted"> </h3>
+                            </Card.Header>
+                            <Card>
+                              <Accordion.Toggle as={Card.Header} eventKey="0">
+                                <h3 id="failed"> </h3>
+                              </Accordion.Toggle>
+                              <Accordion.Collapse eventKey="0">
+                                <Card.Body><div id="failedarr"> </div></Card.Body>
+                              </Accordion.Collapse>
+                            </Card>
+                          </Accordion>
+                        </div>
+                        {/* <h2 id="failed"> </h2>
+                        <div id="failedarr"> </div> */}
+                      </div>
+                    </form>
                   </div>
-                  {/* <h2 id="failed"> </h2>
-                  <div id="failedarr"> </div> */}
                 </div>
-              </form>
+                <div className='row' id='credits'>
+                  <div className='col-lg-12'>
+                  <h3>Credits</h3>
+                  <p>
+                    <a href='https://twitter.com/Fizzi36'>Fizzi</a> and the <a href='https://slippi.gg/about'>Team for Project Slippi</a>
+                  </p>
+
+                  <h3>Contact</h3>
+                  <p>
+                      If you run into any issues or would like to provide feedback, feel free to contact me on Discord (geff ◕‿◕✿#7261) 
+
+                      or email me at at geoffreylao@outlook.com 
+                  </p>
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
       )
