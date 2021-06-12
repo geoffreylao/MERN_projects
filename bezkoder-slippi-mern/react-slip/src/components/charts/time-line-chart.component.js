@@ -75,6 +75,11 @@ export default class TimeLineChart extends Component {
             text: "Winrate over Match Duration",
             fontSize: 20
           },
+          layout: {
+            padding: {
+              top: 10
+            }
+          },
           plugins: {
             labels: {
               render: "image",

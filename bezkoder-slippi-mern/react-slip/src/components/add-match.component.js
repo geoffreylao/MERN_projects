@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import MatchDataService from "../services/match.service";
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
+import ReactSpinner from 'react-bootstrap-spinner'
+import { Check } from 'react-bootstrap-icons';
 
 function makeUL(array){
   // Create the list element:
@@ -48,6 +50,10 @@ export default class AddMatch extends Component {
   }
 
   onSubmit(e) {
+    this.setState({
+      filesLoaded: 'loading'
+    })
+
     document.getElementById("failedarr").innerHTML = "";
     e.preventDefault()
 
@@ -58,9 +64,12 @@ export default class AddMatch extends Component {
     console.log(this.state.matchesCollection)
 
     MatchDataService.create(formData).then((res) => {
+      this.setState({
+        filesLoaded: 'loaded'
+      })
         console.log(res)
-        document.getElementById("inserted").innerHTML = (res.data.inserted ? "Inserted: " + res.data.inserted : "");
-        document.getElementById("failed").innerHTML = "Failed: " + res.data.failed_arr.length;
+        document.getElementById("inserted").innerHTML = (res.data.inserted ? "✓ Inserted: " + res.data.inserted: "");
+        document.getElementById("failed").innerHTML = "✘ Failed: " + res.data.failed_arr.length;
         document.getElementById("failedarr").appendChild(makeUL(res.data.failed_arr));
     }, (error) => {
       console.log(error);
@@ -70,6 +79,19 @@ export default class AddMatch extends Component {
   }
 
   render() {
+    const {filesLoaded} = this.state;
+
+    const renderFiles = () => {
+      if(filesLoaded === 'loaded'){
+      }else if(filesLoaded === 'loading'){
+        return(
+            <div>
+              <div><ReactSpinner type="border" color="primary" size="5" /></div>
+            </div>
+        )
+      }
+    }
+
     return (
         <div className="container">
           {/* <div>
@@ -80,9 +102,9 @@ export default class AddMatch extends Component {
               <h3>About &nbsp; {this.state.gamesTotal.matchId} Matches Uploaded!</h3>
 
               <p>
-              Simple and interactable charts for analyzing your <a href='https://slippi.gg/'>Slippi Online</a> games<br/><br/>
+              This website is designed to provide simple and interactable charts for analyzing your <a href='https://slippi.gg/'>Slippi Online</a> games<br/><br/>
 
-              This Website is inspired by <a href='https://slippistats.online/'>Slippi Stats Online</a> by Scott Norton if you like what you see here please give them some love!<br/><br/>
+              This website is inspired by <a href='https://slippistats.online/'>Slippi Stats Online</a> by Scott Norton if you like what you see here please give them some love!<br/><br/>
 
               Powered by Chart.js + Slippi-js<br/><br/>
 
@@ -119,11 +141,11 @@ export default class AddMatch extends Component {
                         <div id ="my_accordion">
                           <Accordion defaultActiveKey="1">
                             <Card.Header>
-                              <h3 id="inserted"> </h3>
+                              <h4 id="inserted"> </h4>
                             </Card.Header>
                             <Card>
                               <Accordion.Toggle as={Card.Header} eventKey="0">
-                                <h3 id="failed"> </h3>
+                                <h4 id="failed"> </h4>
                               </Accordion.Toggle>
                               <Accordion.Collapse eventKey="0">
                                 <Card.Body><div id="failedarr"> </div></Card.Body>
@@ -131,14 +153,21 @@ export default class AddMatch extends Component {
                             </Card>
                           </Accordion>
                         </div>
-                        {/* <h2 id="failed"> </h2>
-                        <div id="failedarr"> </div> */}
+                        {renderFiles()}
                       </div>
                     </form>
                   </div>
                 </div>
                 <div className='row' id='credits'>
                   <div className='col-lg-12'>
+                  <h3>Caveats</h3>
+                  <p>
+                    Teams games are currently not supported and will fail to be inserted into the database <br/><br/>
+
+                    The backend handles multiple uploads of the same game and prevents duplicates from being written in the database<br/><br/>
+
+                    Games played on non tournament legal stages are allowed to be uploaded but aren't allowed for their stats to be displayed<br/><br/>
+                  </p>
                   <h3>Credits</h3>
                   <p>
                     <a href='https://twitter.com/Fizzi36'>Fizzi</a> and the <a href='https://slippi.gg/about'>Team for Project Slippi</a>

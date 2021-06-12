@@ -843,8 +843,8 @@ function getStats(connect_code, res){
   myOppAvgStocksTaken = myOppKills/finishedMatches;
 
   // Avg Stock Differential
-  myAvgStockDifferential = myTotalStockDifferential / myTotalWins;
-  myOppAvgStockDifferential = myOppTotalStockDifferential / myTotalLosses;
+  myAvgStockDifferential = myTotalStockDifferential / myTotalWins ? myTotalStockDifferential / myTotalWins : 0;
+  myOppAvgStockDifferential = myOppTotalStockDifferential / myTotalLosses ? myOppTotalStockDifferential / myTotalLosses : 0;
 
   // IPM
   myIPM = myTotalInputs / myTotalMinutes;

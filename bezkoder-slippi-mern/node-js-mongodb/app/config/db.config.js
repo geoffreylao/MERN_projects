@@ -1,6 +1,7 @@
+require('dotenv').config();
+
 module.exports = {
-  //url: "mongodb+srv://slpuser:slppassword@Clusterslp.ginsc.mongodb.net/mongoslp"
-  url: 'mongodb://127.0.0.1:27017/mongoslp'
+  url: process.env.URL
 }
 
 // db speed test

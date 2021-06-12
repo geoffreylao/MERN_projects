@@ -831,19 +831,19 @@ function fourStatBarChartComponent(charUsage, charStats, oppCharUsage, oppCharSt
     }
   }
 
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < oppitems.length; i++) {
     if(oppitems[i][1] !== 0){
       deathsArr.push(
         {
-          label: (charDict[items[i][0]]).replace(".png", " (Opponent)"),
+          label: (charDict[oppitems[i][0]]).replace(".png", " (Opponent)"),
           data: [
-            oppCharStats[0][items[i][0]],
-            oppCharStats[1][items[i][0]],
-            oppCharStats[2][items[i][0]],
-            oppCharStats[3][items[i][0]]
+            oppCharStats[0][oppitems[i][0]],
+            oppCharStats[1][oppitems[i][0]],
+            oppCharStats[2][oppitems[i][0]],
+            oppCharStats[3][oppitems[i][0]]
           ],
-          backgroundColor: charbackgroundColorDict[items[i][0]],
-          borderColor: charborderColorDict[items[i][0]],
+          backgroundColor: charbackgroundColorDict[oppitems[i][0]],
+          borderColor: charborderColorDict[oppitems[i][0]],
           borderWidth: 1,
           stack: 'opponent',
           hidden: !checked

@@ -43,10 +43,13 @@ ul {
 }
 
 h4 {
-  background: url(https://cdn0.iconfinder.com/data/icons/arrows-android-l-lollipop-icon-pack/24/expand2-256.png) no-repeat calc(100% - 10px) center;
-  background-size: 20px;
   cursor: pointer;
   font-size: 18px;
+}
+
+#failed{
+  background: url(https://cdn0.iconfinder.com/data/icons/arrows-android-l-lollipop-icon-pack/24/expand2-256.png) no-repeat calc(100% - 10px) center;
+  background-size: 20px;
 }
 
 #imgcontainer {
@@ -192,4 +195,12 @@ a:hover {
 
 #credits{
   padding-top: 85px;
+}
+
+#inserted{
+  color: green
+}
+
+#failed{
+  color: red
 }

@@ -19,7 +19,7 @@ export default class PieChart extends Component {
               }
             ]
           }}
-          height={'500%'}
+          height={'620%'}
           options={{   
             responsive: true,
             maintainAspectRatio: false,

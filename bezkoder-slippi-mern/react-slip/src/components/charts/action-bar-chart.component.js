@@ -20,7 +20,7 @@ export default class ActionsBarChart extends Component {
           labels: ['Wavedash', 'Waveland', 'Air Dodge', 'Dash Dance', 'Spot Dodge', 'Ledge Grab', 'Roll'],
           datasets: this.props.dataset,
         }}
-         height={'210%'}
+         height={'220%'}
          options = {{
            title: {
              display: true,
