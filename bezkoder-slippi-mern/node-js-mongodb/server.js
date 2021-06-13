@@ -6,7 +6,8 @@ const busboy = require('connect-busboy');
 const app = express();
 
 app.use(busboy({
-  highWaterMark: 2 * 1024 * 1024
+  highWaterMark: 2 * 1024 * 1024,
+  immediate: true
 }))
 
 var corsOptions = {
