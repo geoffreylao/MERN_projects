@@ -9,15 +9,10 @@ const uri = db.url;
 var MongoClient = require('mongodb').MongoClient;
 
 // POST upload function imports
-const multer = require('multer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
 const DIR = path.resolve(__dirname, '../public/');
-
-// Zip function import
-var AdmZip = require("adm-zip");
-
 
 // Variables for parse_folder function
 var obj_arr = [];
@@ -341,7 +336,6 @@ function parse_folder(folder, res){
       }); // dbo.collection
     }); // MongoClient.connect
   } // else
-
 
 }// parse_folder
 
@@ -1154,22 +1148,9 @@ function getStats(connect_code, res){
 }
 
 exports.create = (req, res) => {
-
   // File storage location and naming
   var R_DIR = DIR + "/" + uuidv4();
   fs.mkdir(R_DIR, function(err){});
-
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, R_DIR);
-    },
-    filename: (req, file, cb) => {
-        const fileName = file.originalname;
-        cb(null,fileName)
-    }
-  });
-
-
 
   var files = 0, finished = false;
 
@@ -1209,6 +1190,11 @@ exports.create = (req, res) => {
         }
       });
 
+      fstream.on('error', function(){
+          console.log('fstream error')       
+      });
+
+
       file.pipe(fstream)
 
   }); // busboy on file
@@ -1216,6 +1202,17 @@ exports.create = (req, res) => {
   req.busboy.on('finish', function() {
     finished = true;
   });
+
+  req.busboy.on('error', function() {
+    console.log('busboy error')
+  });
+
+  req.connection.on('error', function (error) {
+    //do something like cancelling the mongodb session ...
+    console.log('connection error')
+    parse_folder(R_DIR, res); 
+    rimraf.sync(R_DIR);
+});
 
   return req.pipe(req.busboy); // Pipe it trough busboy
 }
