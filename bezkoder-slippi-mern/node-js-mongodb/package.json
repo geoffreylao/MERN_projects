@@ -16,7 +16,7 @@
   "author": "geoff lao",
   "license": "ISC",
   "dependencies": {
-    "@slippi/slippi-js": "file:./@slippi/slippi-js",
+    "@slippi/slippi-js": "file:slippi-slippi-js-6.1.0.tgz",
     "body-parser": "^1.19.0",
     "connect-busboy": "0.0.2",
     "cors": "^2.8.5",
