@@ -3,7 +3,6 @@ import MatchDataService from "../services/match.service";
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import ReactSpinner from 'react-bootstrap-spinner'
-import { Check } from 'react-bootstrap-icons';
 
 function makeUL(array){
   // Create the list element:
@@ -99,7 +98,7 @@ export default class AddMatch extends Component {
           </div> */}
             <div className="row">
             <div className='col-lg-6'>
-              <h3>About &nbsp; {this.state.gamesTotal.matchId} Matches Uploaded!</h3>
+              <h3>About &nbsp; </h3>
 
               <p>
               This website is designed to provide simple and interactable charts for analyzing your <a href='https://slippi.gg/'>Slippi Online</a> games<br/><br/>
@@ -130,6 +129,7 @@ export default class AddMatch extends Component {
               <div className='col-lg-6'>             
                 <div className='row'>
                   <div className='col-lg-12'>
+                  <h3>{this.state.gamesTotal.matchId} Matches Uploaded!</h3>
                     <form onSubmit={this.onSubmit} encType="multipart/form-data">
                       <div className="form-group">
                           <input type="file" accept=".slp" name="matchesCollection" id="FileSlp" onChange={this.onFileChange} multiple />

@@ -1621,6 +1621,9 @@ export default class MatchStats extends Component {
                   'Regular Death')}
               </div>
             </div>
+
+            <hr class="my-4"></hr>            
+
           </Container>
         )
       }
@@ -1739,6 +1742,11 @@ export default class MatchStats extends Component {
         </div>
         <div className="col-md-12">
           {renderStats()}
+        </div>
+        <div className="col-md-12">
+          <div class="footer">
+            <h6>Chart.slp | Slippi Charts</h6>
+          </div>
         </div>
       </div>
     );
